@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentiment
+spec:
+  selector:
+    app: sentiment-classifier
+  ports:
+    - port: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentiment-classifier
+  labels:
+    app: sentiment-classifier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentiment-classifier
+  template:
+    metadata:
+      labels:
+        app: sentiment-classifier
+    spec:
+      containers:
+      - name: sentiment-classifier
+        image: twitterk8cr.azurecr.io/sentiment_classifier
+        ports:
+        - containerPort: 5000
+
+

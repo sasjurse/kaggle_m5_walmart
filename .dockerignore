@@ -1,0 +1,7 @@
+venv/
+raw_data/
+.idea/
+__pycache__/
+scratch/
+.pytest_cache/
+plots/

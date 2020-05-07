@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: add-tweets
+spec:
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: twitterk8cr.azurecr.io/python-runner:latest
+            imagePullPolicy: Always
+            command: ['python', 'twitter_runner.py']
+            env:
+              - name: POSTGRES_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-info
+                    key: password
+          restartPolicy: Never
+      backoffLimit: 1
