@@ -3,7 +3,6 @@ import os
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
-from src.generics.postgres import import_secrets_from_local
 
 """NB. We are using sqlalchemy for doing inserts without worrying about SQL-injection attacks. However, note that
 this library have massive speed issues in our code. 
@@ -28,8 +27,6 @@ class Example(base):
 
 
 def create_sa_engine():
-    if not os.getenv('POSTGRES_SERVICE_HOST'):
-        import_secrets_from_local()
     db_string = f"postgresql+psycopg2://postgres:{os.environ['POSTGRES_PASSWORD']}@" \
                 f"{os.environ['POSTGRES_SERVICE_HOST']}:5432"
 

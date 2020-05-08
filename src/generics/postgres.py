@@ -3,14 +3,7 @@ import psycopg2
 import pandas as pd
 
 
-def import_secrets_from_local():
-    from credentials import set_secrets
-    set_secrets.set_postgres_secrets()
-
-
 def get_connection():
-    if not os.getenv('POSTGRES_SERVICE_HOST'):
-        import_secrets_from_local()
     conn = psycopg2.connect(user='postgres',
                             host=os.environ['POSTGRES_SERVICE_HOST'],
                             password=os.environ['POSTGRES_PASSWORD'])
