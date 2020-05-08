@@ -3,7 +3,7 @@ import os
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
-from src.postgres import import_secrets_from_local
+from src.generics.postgres import import_secrets_from_local
 
 """NB. We are using sqlalchemy for doing inserts without worrying about SQL-injection attacks. However, note that
 this library have massive speed issues in our code. 

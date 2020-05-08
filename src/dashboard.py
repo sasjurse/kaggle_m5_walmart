@@ -6,8 +6,8 @@ import dash_table
 from dash.dependencies import Output, State, Input
 import plotly.graph_objects as go
 
-from src.postgres import dataframe_from_sql, execute_sql
-from src.analysis import update_search_term, get_search_term
+from generics.postgres import dataframe_from_sql, execute_sql
+from analysis import update_search_term, get_search_term
 
 server = flask.Flask(__name__)
 
