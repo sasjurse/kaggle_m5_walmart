@@ -2,8 +2,12 @@ from pathlib import Path
 
 
 def raw_data_folder():
-    return Path('../raw_data')
+    tmp = Path('../raw_data')
+    tmp = tmp.resolve()
+    return tmp
 
 
 def plots_folder():
-    return Path('../plots')
+    tmp = Path('../raw_data')
+    tmp = tmp.resolve()
+    return tmp

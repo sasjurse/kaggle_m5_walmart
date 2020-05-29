@@ -12,6 +12,6 @@ def profile_csv(input_file: str, minimal=False):
 
 if __name__ == '__main__':
     profile_csv('calendar')
-    profile_csv('sales_train_validation')
+    profile_csv('sales_train_validation', minimal=True)
     profile_csv('sample_submission')
-    profile_csv('sell_prices')
+    profile_csv('sell_prices', minimal=True)
