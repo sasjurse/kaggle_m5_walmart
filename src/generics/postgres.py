@@ -42,17 +42,6 @@ def execute_sql(sql: str):
     conn.close()
 
 
-def insert_dict_to_db(data: dict, table: str):
-    for key, value in data.items():
-        assert ',' not in key, 'No escape characters in data please'
-        assert ',' not in value, 'No escape characters in values please'
-    sql = f"""
-    INSERT INTO {table} ({", ".join(data.keys())})
-    VALUES ({", ".join(data.values())})"""
-
-    execute_sql(sql)
-
-
 def create_sa_engine():
     set_secrets_from_local()
     db_string = f"postgresql+psycopg2://postgres:{os.environ['POSTGRES_PASSWORD']}@" \
@@ -63,3 +52,10 @@ def create_sa_engine():
 
 def create_sa_session():
     return sa.orm.Session(create_sa_engine())
+
+
+def dataframe_to_table(df: pd.DataFrame, table: str, if_exists='append'):
+    """https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html"""
+    assert isinstance(df, pd.DataFrame), 'expected dataframe'
+
+    df.to_sql(name=table, con=create_sa_engine(), if_exists=if_exists, index=False)
