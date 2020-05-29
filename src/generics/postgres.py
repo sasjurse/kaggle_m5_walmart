@@ -2,6 +2,7 @@ import os
 import psycopg2
 import pandas as pd
 import sqlalchemy as sa
+from generics.file_locations import sql_folder
 
 
 def set_secrets_from_local():
@@ -59,3 +60,9 @@ def dataframe_to_table(df: pd.DataFrame, table: str, if_exists='append'):
     assert isinstance(df, pd.DataFrame), 'expected dataframe'
 
     df.to_sql(name=table, con=create_sa_engine(), if_exists=if_exists, index=False)
+
+
+def execute_sql_from_file(filename: str):
+    with open(sql_folder()/f'{filename}.sql', 'r') as f:
+        txt = f.read()
+        execute_sql(txt)

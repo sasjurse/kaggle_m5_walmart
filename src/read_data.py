@@ -30,3 +30,17 @@ def import_sales_prices():
 import_calendar()
 import_sales_train_validation()
 import_sales_prices()
+
+#%%
+
+from generics.postgres import execute_sql
+from generics.file_locations import sql_folder
+
+with open(sql_folder()/'sales_table.sql', 'r') as f:
+    rrr = f.read()
+
+#%%
+
+from generics.postgres import execute_sql_from_file
+
+execute_sql_from_file('sales_table')
