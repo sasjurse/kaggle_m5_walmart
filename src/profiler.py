@@ -4,9 +4,9 @@ from pandas_profiling import ProfileReport
 from generics import file_locations
 
 
-def profile_csv(input_file: str):
+def profile_csv(input_file: str, minimal=False):
     df = pd.read_csv(file_locations.raw_data_folder() / f'{input_file}.csv')
-    profile = ProfileReport(df, title=f"{input_file}")
+    profile = ProfileReport(df, title=f"{input_file}", minimal=minimal)
     profile.to_file(file_locations.plots_folder() / f'{input_file}.html')
 
 
