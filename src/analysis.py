@@ -7,7 +7,8 @@ import time
 
 from src.twitter_collector import clean_text, search_api
 from src.generics.postgres import execute_sql, dataframe_from_sql
-from src.generics.postgres_sqlalchemy import SearchTerm, Example, create_sa_session
+from src.generics.postgres_sqlalchemy import SearchTerm, Example
+from generics.postgres import create_sa_session
 
 
 def get_prediction_url():

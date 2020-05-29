@@ -17,7 +17,7 @@ print(df.dtypes)
 
 #%%
 
-from generics.postgres_sqlalchemy import create_sa_engine
+from generics.postgres import create_sa_engine
 
 engin = create_sa_engine()
 
