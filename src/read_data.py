@@ -13,13 +13,13 @@ def import_calendar():
 
 
 def import_sales_train_validation():
-    df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv', parse_dates=['date'])
+    df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv')
     print(df.dtypes)
     dataframe_to_table(df=df, table='sales', if_exists='replace')
 
 
 def import_sales_prices():
-    df = pd.read_csv(raw_data_folder() / 'sell_prices.csv', parse_dates=['date'])
+    df = pd.read_csv(raw_data_folder() / 'sell_prices.csv')
     print(df.dtypes)
     dataframe_to_table(df=df, table='sell_prices', if_exists='replace')
 
