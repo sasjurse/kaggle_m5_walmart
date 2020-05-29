@@ -1,7 +1,7 @@
 venv/
 raw_data/
 .idea/
-credentials/
+src/credentials/
 __pycache__/
 scratch/
 .pytest_cache/

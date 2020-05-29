@@ -7,19 +7,18 @@ import generics.postgres
 
 
 def raw_data_folder():
-    return Path('../raw_data')
+    return Path('./raw_data')
 
 
 
 df = pd.read_csv(raw_data_folder() / 'calendar.csv', parse_dates=['date'])
 print(df.dtypes)
 
-
 #%%
 
 from generics.postgres import create_sa_engine
 
-engin = create_sa_engine()
+engine = create_sa_engine()
 
 
 #%%

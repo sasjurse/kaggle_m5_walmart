@@ -4,7 +4,14 @@ import pandas as pd
 import sqlalchemy as sa
 
 
+def set_secrets_from_local():
+    if not os.getenv('POSTGRES_SERVICE_HOST'):
+        from credentials.set_secrets import set_postgres_secrets
+        set_postgres_secrets()
+
+
 def get_connection():
+    set_secrets_from_local()
     conn = psycopg2.connect(user='postgres',
                             host=os.environ['POSTGRES_SERVICE_HOST'],
                             password=os.environ['POSTGRES_PASSWORD'])
@@ -47,6 +54,7 @@ def insert_dict_to_db(data: dict, table: str):
 
 
 def create_sa_engine():
+    set_secrets_from_local()
     db_string = f"postgresql+psycopg2://postgres:{os.environ['POSTGRES_PASSWORD']}@" \
                 f"{os.environ['POSTGRES_SERVICE_HOST']}:5432"
 
