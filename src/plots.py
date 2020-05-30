@@ -65,6 +65,15 @@ plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_dept_MA.html'))
 
 #%%
 
+def append_snap_to_fig(fig):
+    for column in ['snap_CA', 'snap_TX', 'snap_WI']:
+        snap_days = dataframe_from_sql(f'select date, "{column}" from calendar where "{column}"=1')
+        trace_1 = go.Scatter(x=snap_days['date'], y=snap_days[column], name=column, mode='markers', yaxis='y2')
+        fig.add_trace(trace_1)
+
+    return fig
+
+
 sql = """
 with base as (
 select 
@@ -88,4 +97,8 @@ df = dataframe_from_sql(sql)
 
 fig = px.line(df, x="date", y="quantity", color='store_id')
 
+fig = append_snap_to_fig(fig)
+
 plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_store_MA.html'))
+
+#%%
