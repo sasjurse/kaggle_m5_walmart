@@ -4,7 +4,7 @@ from pathlib import Path
 def _search_for_root(path):
     tmp = path / 'src'
     if not tmp.exists():
-        return _search_for_root(tmp.parent)
+        return _search_for_root(path.parent)
     else:
         return path
 

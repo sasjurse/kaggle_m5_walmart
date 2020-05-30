@@ -14,6 +14,7 @@ def import_calendar():
 
 def import_sell_prices():
     start = time.time()
+
     execute_sql('drop table if exists prices')
     execute_sql_from_file('prices_table')
 
@@ -26,22 +27,36 @@ def import_sell_prices():
 
     cur.close()
     conn.close()
+
     end = time.time()
     print(f'import_sell_prices took {round(end - start)} seconds')
 
 
 def import_sales():
+    start = time.time()
+
     df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv')
-
     df.drop(['item_id', 'dept_id', 'cat_id', 'store_id', 'state_id'], inplace=True, axis='columns')
-
     df2 = pd.melt(df, id_vars=['id'])
 
-    start = time.time()
     execute_sql('drop table if exists sales_raw')
     execute_sql_from_file('sales_raw_table')
-
     dataframe_to_table_bulk(df2, 'sales_raw')
+
+    end = time.time()
+    print(f'import_sales took {round(end - start)} seconds')
+
+
+def import_item_info():
+    start = time.time()
+
+    df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv')
+    df = df[['id', 'item_id', 'dept_id', 'cat_id', 'store_id', 'state_id']]
+    df.drop_duplicates(inplace=True)
+
+    execute_sql('drop table if exists item_info')
+    execute_sql_from_file('item_info_table')
+    dataframe_to_table_bulk(df, 'item_info')
 
     end = time.time()
     print(f'import_sales took {round(end - start)} seconds')
