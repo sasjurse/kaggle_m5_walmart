@@ -21,5 +21,4 @@ def plots_folder():
 
 def sql_folder():
     root = _search_for_root(Path.cwd())
-    print(root)
     return root / 'src' / 'sql'

@@ -89,6 +89,24 @@ import time
 
 df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv')
 
+
+#%%
+
+column_name = 'id'
+
+max(df[column_name].str.len())
+
 #%%
 
 df2 = pd.melt(df, id_vars=['id', 'item_id', 'dept_id', 'cat_id', 'store_id', 'state_id'])
+
+
+#%%
+execute_sql('drop table if exists sales_ext')
+execute_sql_from_file('sales_ext_table')
+
+dataframe_to_table_bulk(df2, 'sales_ext')
+
+#%%
+
+execute_sql('drop table if exists sales_ext')
