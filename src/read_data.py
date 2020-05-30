@@ -41,12 +41,14 @@ with open(sql_folder()/'sales_table.sql', 'r') as f:
 
 #%%
 
-from generics.postgres import execute_sql_from_file
+from generics.postgres import execute_sql_from_file, execute_sql
 
+execute_sql('drop table if exists  sales')
 execute_sql_from_file('sales_table')
 
 #%%
 
-from generics.postgres import execute_sql
+from generics.postgres import execute_sql_from_file, execute_sql
 
-execute_sql('drop table sales')
+execute_sql('drop table if exists item_info')
+execute_sql_from_file('item_info_table')
