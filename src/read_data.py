@@ -1,7 +1,7 @@
 import pandas as pd
 
 from generics.file_locations import raw_data_folder
-from generics.postgres import dataframe_to_table, execute_sql_from_file, execute_sql
+from generics.postgres import dataframe_to_table, execute_sql_from_file, execute_sql, get_connection
 
 
 def import_calendar():
@@ -11,11 +11,21 @@ def import_calendar():
 
 
 def import_sales_prices():
+    start = time.time()
     execute_sql('drop table if exists prices')
     execute_sql_from_file('prices_table')
-    df = pd.read_csv(raw_data_folder() / 'sell_prices.csv').sample(1000000)
-    print(df.dtypes)
-    dataframe_to_table(df=df, table='prices', if_exists='append')
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    with open(raw_data_folder() / 'sell_prices.csv', 'r') as f:
+        f.readline()  # don't read the column names as a row in copy_from
+        cur.copy_from(file=f, table='prices', sep=',')
+
+    cur.close()
+    conn.close()
+    end = time.time()
+    print(f'import_sales took {round(end - start)} seconds')
 
 
 
@@ -24,7 +34,7 @@ def import_sales_prices():
 import_calendar()
 print('calendar imported')
 import_sales_prices()
-print('prices')
+print('prices imported')
 
 #%%
 
@@ -70,3 +80,9 @@ with open(raw_data_folder() / 'sell_prices.csv', 'r') as f:
 
 end = time.time()
 print(f'insert took {round(end-start)} seconds')
+
+#%%
+
+from generics.postgres import dataframe_from_sql
+
+df = dataframe_from_sql('select * from calendar limit 100')
