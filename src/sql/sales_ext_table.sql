@@ -5,7 +5,7 @@ CREATE UNLOGGED TABLE sales_ext (
     ,cat_id varchar(20)
     ,store_id varchar(10)
     ,state_id varchar(10)
-    ,posting_date DATE
     ,quantity INT
+    ,posting_date DATE
     ,PRIMARY KEY (id, posting_date)
 )
