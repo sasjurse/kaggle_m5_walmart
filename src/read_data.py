@@ -27,7 +27,7 @@ def import_sell_prices():
     cur.close()
     conn.close()
     end = time.time()
-    print(f'import_sales took {round(end - start)} seconds')
+    print(f'import_sell_prices took {round(end - start)} seconds')
 
 
 def import_sales():
@@ -52,3 +52,5 @@ if __name__ == '__main__':
     print('calendar imported')
     import_sell_prices()
     print('prices imported')
+    import_sales()
+    print('sales imported')
