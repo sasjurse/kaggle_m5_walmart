@@ -12,4 +12,5 @@ def sales_by_day():
 
 
 if __name__ == '__main__':
+    sales_ext()
     sales_by_day()

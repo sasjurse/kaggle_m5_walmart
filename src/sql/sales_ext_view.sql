@@ -5,6 +5,7 @@ select
     ,c.date
     ,c.weekday
     ,c.year
+    ,c.wm_yr_wk
     ,c.event_name_1
     ,c.event_name_2
     ,c.event_type_1
@@ -14,7 +15,7 @@ select
     ,i.store_id
     ,i.state_id
 from 
-    calendar as c
-    left join sales_raw as sr on c.d = sr.d
+    sales_raw as sr
+    left join calendar as c on c.d = sr.d
     left join item_info as i on sr.id = i.id
 )
