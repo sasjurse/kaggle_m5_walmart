@@ -44,3 +44,9 @@ with open(sql_folder()/'sales_table.sql', 'r') as f:
 from generics.postgres import execute_sql_from_file
 
 execute_sql_from_file('sales_table')
+
+#%%
+
+from generics.postgres import execute_sql
+
+execute_sql('drop table sales')

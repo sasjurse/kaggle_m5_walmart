@@ -58,7 +58,6 @@ def create_sa_session():
 def dataframe_to_table(df: pd.DataFrame, table: str, if_exists='append'):
     """https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html"""
     assert isinstance(df, pd.DataFrame), 'expected dataframe'
-
     df.to_sql(name=table, con=create_sa_engine(), if_exists=if_exists, index=False)
 
 
