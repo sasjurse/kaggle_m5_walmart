@@ -87,8 +87,8 @@ from generics.postgres import dataframe_to_table_bulk, execute_sql, execute_sql_
 import time
 
 
-df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv').sample(100)
+df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv')
 
 #%%
 
-df2 = pd.melt(df, stubnames='d_', i=['id', 'item_id', 'dept_id', 'cat_id', 'store_id', 'state_id'], j='day')
+df2 = pd.melt(df, id_vars=['id', 'item_id', 'dept_id', 'cat_id', 'store_id', 'state_id'])
