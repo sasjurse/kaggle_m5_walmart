@@ -1,4 +1,4 @@
-create table item_info (
+create unlogged table item_info (
     id varchar(50) PRIMARY KEY
     ,item_id varchar(50)
     ,dept_id varchar(20)

@@ -1,7 +1,7 @@
 import pandas as pd
 
 from generics.file_locations import raw_data_folder
-from generics.postgres import dataframe_to_table
+from generics.postgres import dataframe_to_table, execute_sql_from_file, execute_sql
 
 #%%
 
@@ -12,23 +12,18 @@ def import_calendar():
     dataframe_to_table(df=df, table='calendar', if_exists='replace')
 
 
-def import_sales_train_validation():
-    df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv')
-    print(df.dtypes)
-    dataframe_to_table(df=df, table='sales', if_exists='replace')
-
-
 def import_sales_prices():
+    execute_sql('drop table if exists prices')
+    execute_sql_from_file('prices_table')
     df = pd.read_csv(raw_data_folder() / 'sell_prices.csv')
     print(df.dtypes)
-    dataframe_to_table(df=df, table='sell_prices', if_exists='replace')
+    dataframe_to_table(df=df, table='prices', if_exists='append')
 
 
 
 #%%
 
 import_calendar()
-import_sales_train_validation()
 import_sales_prices()
 
 #%%
@@ -52,3 +47,6 @@ from generics.postgres import execute_sql_from_file, execute_sql
 
 execute_sql('drop table if exists item_info')
 execute_sql_from_file('item_info_table')
+
+#%%
+execute_sql('drop table sell_prices')

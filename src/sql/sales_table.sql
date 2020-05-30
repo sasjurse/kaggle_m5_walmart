@@ -1,4 +1,4 @@
-CREATE TABLE sales (
+CREATE UNLOGGED TABLE sales (
     id VARCHAR(50)
     ,posting_date DATE
     ,quantity INT
