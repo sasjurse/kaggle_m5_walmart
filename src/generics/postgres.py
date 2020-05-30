@@ -1,7 +1,9 @@
+import logging
 import os
 import psycopg2
 import pandas as pd
 import sqlalchemy as sa
+import time
 from generics.file_locations import sql_folder
 
 
@@ -25,13 +27,17 @@ def get_cursor():
 
 
 def dataframe_from_sql(sql: str):
+    start = time.time()
     conn = get_connection()
     df = pd.read_sql(sql, conn)
     conn.close()
+    end = time.time()
+    logging.info(f'dataframe_from_sql took {round(end-start)} seconds')
     return df
 
 
 def execute_sql(sql: str):
+    start = time.time()
     conn = get_connection()
     cursor = conn.cursor()
     try:
@@ -41,6 +47,8 @@ def execute_sql(sql: str):
         raise e
     cursor.close()
     conn.close()
+    end = time.time()
+    logging.info(f'execute_sql took {round(end-start)} seconds')
 
 
 def create_sa_engine():
@@ -58,7 +66,10 @@ def create_sa_session():
 def dataframe_to_table(df: pd.DataFrame, table: str, if_exists='append'):
     """https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html"""
     assert isinstance(df, pd.DataFrame), 'expected dataframe'
+    start = time.time()
     df.to_sql(name=table, con=create_sa_engine(), if_exists=if_exists, index=False)
+    end = time.time()
+    logging.info(f'dataframe_to_table took {round(end-start)} seconds')
 
 
 def execute_sql_from_file(filename: str):
