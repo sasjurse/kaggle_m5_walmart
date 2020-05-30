@@ -3,6 +3,7 @@ import os
 import psycopg2
 import pandas as pd
 import sqlalchemy as sa
+import tempfile
 import time
 from generics.file_locations import sql_folder
 
@@ -64,7 +65,8 @@ def create_sa_session():
 
 
 def dataframe_to_table(df: pd.DataFrame, table: str, if_exists='append'):
-    """https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html"""
+    """SLOW because sqlalchemy
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_sql.html"""
     assert isinstance(df, pd.DataFrame), 'expected dataframe'
     start = time.time()
     df.to_sql(name=table, con=create_sa_engine(), if_exists=if_exists, index=False)
@@ -76,3 +78,20 @@ def execute_sql_from_file(filename: str):
     with open(sql_folder()/f'{filename}.sql', 'r') as f:
         txt = f.read()
         execute_sql(txt)
+
+
+def dataframe_to_table_bulk(df: pd.DataFrame, table: str):
+    """Faster, but less checks on column names and escape characters"""
+    start = time.time()
+    cur = get_cursor()
+
+    with tempfile.NamedTemporaryFile() as temp:
+        df.to_csv(temp.name, sep=',', index=False)
+        temp.seek(0)
+        temp.readline()  # don't read the column names as a row in copy_from
+        cur.copy_from(file=temp, table=table, sep=',')
+
+    cur.close()
+    end = time.time()
+
+    logging.info(f'dataframe_to_table_bulk took {round(end-start)} seconds')

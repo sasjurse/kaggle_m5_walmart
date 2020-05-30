@@ -10,7 +10,7 @@ def import_calendar():
     dataframe_to_table(df=df, table='calendar', if_exists='replace')
 
 
-def import_sales_prices():
+def import_sell_prices():
     start = time.time()
     execute_sql('drop table if exists prices')
     execute_sql_from_file('prices_table')
@@ -33,14 +33,14 @@ def import_sales_prices():
 
 import_calendar()
 print('calendar imported')
-import_sales_prices()
+import_sell_prices()
 print('prices imported')
 
 #%%
 
 import time
 start = time.time()
-import_sales_prices()
+import_sell_prices()
 end = time.time()
 print(f'insert took {round(end-start)} seconds')
 #%%
