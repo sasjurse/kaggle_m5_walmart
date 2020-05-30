@@ -1,7 +1,9 @@
 import pandas as pd
+import time
 
 from generics.file_locations import raw_data_folder
-from generics.postgres import dataframe_to_table, execute_sql_from_file, execute_sql, get_connection
+from generics.postgres import dataframe_to_table, execute_sql_from_file, execute_sql, \
+    get_connection, dataframe_to_table_bulk
 
 
 def import_calendar():
@@ -28,61 +30,25 @@ def import_sell_prices():
     print(f'import_sales took {round(end - start)} seconds')
 
 
+def import_sales():
+    df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv')
 
-#%%
+    df.drop(['item_id', 'dept_id', 'cat_id', 'store_id', 'state_id'], inplace=True, axis='columns')
 
-import_calendar()
-print('calendar imported')
-import_sell_prices()
-print('prices imported')
+    df2 = pd.melt(df, id_vars=['id'])
 
-#%%
+    start = time.time()
+    execute_sql('drop table if exists sales_raw')
+    execute_sql_from_file('sales_raw_table')
 
-import time
-start = time.time()
-import_sell_prices()
-end = time.time()
-print(f'insert took {round(end-start)} seconds')
-#%%
+    dataframe_to_table_bulk(df2, 'sales_raw')
 
-from generics.postgres import execute_sql_from_file, execute_sql
+    end = time.time()
+    print(f'import_sales took {round(end - start)} seconds')
 
-execute_sql('drop table if exists  sales')
-execute_sql_from_file('sales_table')
 
-#%%
-
-from generics.postgres import execute_sql_from_file, execute_sql
-
-execute_sql('drop table if exists item_info')
-execute_sql_from_file('item_info_table')
-
-#%%
-execute_sql('drop table sell_prices')
-
-#%%
-
-from generics.postgres import get_connection
-from generics.postgres import dataframe_to_table, execute_sql_from_file, execute_sql
-import time
-start = time.time()
-
-execute_sql('drop table if exists prices')
-execute_sql_from_file('prices_table')
-
-conn = get_connection()
-cur = conn.cursor()
-from generics.file_locations import raw_data_folder
-
-with open(raw_data_folder() / 'sell_prices.csv', 'r') as f:
-    f.readline()
-    cur.copy_from(file=f, table='prices', sep=',')
-
-end = time.time()
-print(f'insert took {round(end-start)} seconds')
-
-#%%
-
-from generics.postgres import dataframe_from_sql
-
-df = dataframe_from_sql('select * from calendar limit 100')
+if __name__ == '__main__':
+    import_calendar()
+    print('calendar imported')
+    import_sell_prices()
+    print('prices imported')

@@ -90,22 +90,25 @@ import time
 df = pd.read_csv(raw_data_folder() / 'sales_train_validation.csv')
 
 
-#%%
-
-column_name = 'id'
-
-max(df[column_name].str.len())
 
 #%%
 
-df2 = pd.melt(df, id_vars=['id', 'item_id', 'dept_id', 'cat_id', 'store_id', 'state_id'])
+df.drop(['item_id', 'dept_id', 'cat_id', 'store_id', 'state_id'], inplace=True, axis='columns')
+
+df2 = pd.melt(df, id_vars=['id'])
 
 
 #%%
-execute_sql('drop table if exists sales_ext')
-execute_sql_from_file('sales_ext_table')
 
-dataframe_to_table_bulk(df2, 'sales_ext')
+import time
+start = time.time()
+execute_sql('drop table if exists sales_raw')
+execute_sql_from_file('sales_raw_table')
+
+dataframe_to_table_bulk(df2, 'sales_raw')
+
+end = time.time()
+print(f'import_sales took {round(end - start)} seconds')
 
 #%%
 
