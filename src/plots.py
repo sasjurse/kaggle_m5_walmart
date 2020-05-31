@@ -95,7 +95,7 @@ order by 1 desc"""
 df = dataframe_from_sql(sql)
 
 fig = px.line(df, x="date", y="quantity", color='dept_id')
-fig = append_snap_to_fig((fig))
+fig = append_snap_to_fig(fig)
 
 plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_dept_one_store_MA.html'))
 
