@@ -2,7 +2,7 @@ from src.generics.postgres import execute_sql, dataframe_from_sql, execute_sql_f
 
 
 def sales_ext():
-    execute_sql('drop view sales_ext')
+    execute_sql('drop view if exists sales_ext')
     execute_sql_from_file('sales_ext_view')
 
 

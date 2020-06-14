@@ -69,3 +69,5 @@ if __name__ == '__main__':
     print('prices imported')
     import_sales()
     print('sales imported')
+    import_item_info()
+    print('item info imported')
