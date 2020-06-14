@@ -21,6 +21,7 @@ select
     ,quantity
     ,date
     ,weekday
+    ,store_id
     ,dept_id
     ,state_id
     ,snap_CA
@@ -35,12 +36,14 @@ select
     ,date
     ,quantity as target
     ,weekday
+    ,store_id
     ,dept_id
     ,state_id
     ,snap_CA
     ,sum(quantity) over w3 as quantity_last_3     
     ,sum(quantity) over w7 as quantity_last_7 
-    ,sum(quantity) over w21 as quantity_last_21     
+    ,sum(quantity) over w21 as quantity_last_21
+    ,sum(case when snap_ca then quantity else 0 end ) over w21 as quantity_last_21_SNAP         
 from base
 window 
     w3 as (partition by id order by date asc rows between 3 preceding and 1 preceding)
@@ -53,7 +56,7 @@ select
 from aggregates
 where date > '2014-02-01'
 order by random()
-limit 75000
+limit 150000
 """
 
 
@@ -73,7 +76,7 @@ from sklearn.model_selection import TimeSeriesSplit
 from catboost import CatBoostRegressor
 
 model = CatBoostRegressor(verbose=True,
-                          cat_features=['weekday', 'dept_id', 'state_id'])
+                          cat_features=['weekday', 'dept_id', 'state_id', 'store_id'])
 
 target = df['target']
 train_set = df.drop(['id', 'target', 'date'], axis='columns')
