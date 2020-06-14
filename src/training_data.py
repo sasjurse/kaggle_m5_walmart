@@ -25,7 +25,7 @@ select
     ,state_id
 from sales_ext
 where date between '2014-01-01' and '2014-06-01'
--- and id = 'HOUSEHOLD_2_516_WI_3_validation'
+and state_id = 'CA'
 ),
 
 aggregates as (
@@ -41,7 +41,7 @@ select
     ,sum(quantity) over w21 as quantity_last_21     
 from base
 window 
-    w3 as (partition by id order by date asc rows between 1 preceding and 3 preceding)
+    w3 as (partition by id order by date asc rows between 3 preceding and 1 preceding)
     ,w7 as (partition by id order by date asc rows between 7 preceding and 1 preceding)
     ,w21 as (partition by id order by date asc rows between 21 preceding and 1 preceding)
 )

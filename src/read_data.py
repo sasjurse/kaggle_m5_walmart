@@ -8,8 +8,9 @@ from generics.postgres import dataframe_to_table, execute_sql_from_file, execute
 
 def import_calendar():
     df = pd.read_csv(raw_data_folder() / 'calendar.csv', parse_dates=['date'])
-    print(df.dtypes)
-    dataframe_to_table(df=df, table='calendar', if_exists='replace')
+    execute_sql('drop table if exists calendar')
+    execute_sql_from_file('calendar_table')
+    dataframe_to_table_bulk(df, 'calendar')
 
 
 def import_sell_prices():
