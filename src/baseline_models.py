@@ -19,7 +19,7 @@ select
 'quantity_last_7' as model_name
 ,train.date
 ,train.id
-,train.quantity_last_7 as predicted
+,train.quantity_last_7 / 7 as predicted
 from
     train
 where date between '{VALIDATION_START_DATE:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'

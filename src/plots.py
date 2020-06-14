@@ -103,8 +103,6 @@ plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_dept_one_store_
 #%%
 
 
-
-
 sql = """
 with base as (
 select 
@@ -133,3 +131,21 @@ fig = append_snap_to_fig(fig)
 plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_store_MA.html'))
 
 #%%
+
+sql = """
+select 
+train.date
+,validation.model_name
+,SQRT(AVG(POWER((train.target - validation.predicted),2))) as rmse
+from
+train
+inner join validation on train.date = validation.date and validation.id = train.id
+group by 1,2
+order by 1 desc"""
+
+
+df = dataframe_from_sql(sql)
+
+fig = px.line(df, x="date", y="rmse", color='model_name')
+
+plotly.offline.plot(fig, filename=str(plots_folder() / 'RMSE_by_model.html'))

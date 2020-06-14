@@ -12,12 +12,12 @@ select
 from train 
 where date between '{start_train:%Y-%m-%d}' and '{end_train:%Y-%m-%d}'
 order by random() 
-limit 40000
+limit 600000
 """
 
 df = dataframe_from_sql(sql)
 
-df_val = dataframe_from_sql(f"select * from train where date between '2014-07-02' and '2014-07-25' order by random() limit 10000")
+df_val = dataframe_from_sql(f"select * from train where date between '2014-07-02' and '2014-07-25' order by random() limit 100000")
 df_val_y = df_val['target']
 df_val_x = df_val.drop(['id', 'target', 'date'], axis='columns')
 
@@ -44,7 +44,7 @@ yolo = model.get_feature_importance(prettified=True)
 
 from model_utilities import write_validation_results_to_db
 
-write_validation_results_to_db(model=model, model_name='CatBoost')
+write_validation_results_to_db(model=model, model_name='CatBoost_6')
 
 
 #%%
