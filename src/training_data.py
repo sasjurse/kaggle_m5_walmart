@@ -46,9 +46,9 @@ select
 *
 from aggregates
 where date > '2014-02-01'
-
-
-order by 1 desc"""
+order by random()
+limit 25000
+"""
 
 
 df = dataframe_from_sql(sql)
@@ -57,3 +57,18 @@ df = dataframe_from_sql(sql)
 
 sql = "select * from sales_ext where id = 'HOUSEHOLD_2_516_WI_3_validation' and date between '2014-01-01' and '2014-02-01'"
 df2 = dataframe_from_sql(sql)
+
+#%%
+
+from sklearn.model_selection import TimeSeriesSplit
+
+#%%
+
+from catboost import CatBoostRegressor
+
+model = CatBoostRegressor(verbose=True,
+                          cat_features=['weekday', 'dept_id'])
+# train the model
+model.fit(df.drop(['id', 'target', 'date'], axis='columns'), df['target'])
+
+yolo = model.get_feature_importance()
