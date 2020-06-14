@@ -4,7 +4,7 @@ from datetime import datetime
 
 dt = datetime(year=2014, month=6, day=1)
 
-df = dataframe_from_sql(f"select * from train where date < '{dt:%Y-%m-%d}' order by random() limit 100000")
+df = dataframe_from_sql(f"select * from train where date < '{dt:%Y-%m-%d}' order by random() limit 150000")
 
 model = CatBoostRegressor(verbose=True,
                           cat_features=['weekday', 'dept_id', 'state_id', 'store_id'],
@@ -18,13 +18,6 @@ model.fit(train_set, target)
 print(train_set.columns)
 
 yolo = model.get_feature_importance(prettified=True)
-
-#%%
-
-for dt in
-
-
-test =
 
 #%%
 
