@@ -11,6 +11,12 @@ def sales_by_day():
     execute_sql_from_file('sales_by_day')
 
 
+def snap_info():
+    execute_sql('drop table if exists snap_info_table')
+    execute_sql_from_file('snap_info_table')
+
+
 if __name__ == '__main__':
     sales_ext()
     sales_by_day()
+    snap_info()
