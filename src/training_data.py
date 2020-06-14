@@ -22,6 +22,7 @@ select
     ,date
     ,weekday
     ,dept_id
+    ,state_id
 from sales_ext
 where date between '2014-01-01' and '2014-06-01'
 -- and id = 'HOUSEHOLD_2_516_WI_3_validation'
@@ -34,11 +35,14 @@ select
     ,quantity as target
     ,weekday
     ,dept_id
+    ,state_id
+    ,sum(quantity) over w3 as quantity_last_3     
     ,sum(quantity) over w7 as quantity_last_7 
     ,sum(quantity) over w21 as quantity_last_21     
 from base
 window 
-    w7 as (partition by id order by date asc rows between 7 preceding and 1 preceding)
+    w3 as (partition by id order by date asc rows between 1 preceding and 3 preceding)
+    ,w7 as (partition by id order by date asc rows between 7 preceding and 1 preceding)
     ,w21 as (partition by id order by date asc rows between 21 preceding and 1 preceding)
 )
 
@@ -47,7 +51,7 @@ select
 from aggregates
 where date > '2014-02-01'
 order by random()
-limit 25000
+limit 75000
 """
 
 
@@ -67,8 +71,13 @@ from sklearn.model_selection import TimeSeriesSplit
 from catboost import CatBoostRegressor
 
 model = CatBoostRegressor(verbose=True,
-                          cat_features=['weekday', 'dept_id'])
-# train the model
-model.fit(df.drop(['id', 'target', 'date'], axis='columns'), df['target'])
+                          cat_features=['weekday', 'dept_id', 'state_id'])
 
-yolo = model.get_feature_importance()
+target = df['target']
+train_set = df.drop(['id', 'target', 'date'], axis='columns')
+# train the model
+model.fit(train_set, target)
+
+print(train_set.columns)
+
+yolo = model.get_feature_importance(prettified=True)
