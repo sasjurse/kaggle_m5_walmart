@@ -12,7 +12,7 @@ select
     ,si.days_since_snap
 from sales_ext
 left join snap_info as si on sales_ext.state_id = si.state_id and si.date = sales_ext.date
-where sales_ext.date between '2014-01-01' and '2015-04-01'
+where sales_ext.date between '2014-01-01' and '2015-10-01'
 
 ),
 
@@ -42,3 +42,6 @@ select
 *
 from aggregates
 where date > '2014-02-01'
+;
+
+ALTER TABLE train ADD CONSTRAINT date_item_id_pkey PRIMARY KEY(date, id)
