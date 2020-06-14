@@ -77,9 +77,11 @@ from sklearn.model_selection import TimeSeriesSplit
 #%%
 
 from catboost import CatBoostRegressor
+from catboost.utils import eval_metric
 
 model = CatBoostRegressor(verbose=True,
-                          cat_features=['weekday', 'dept_id', 'state_id', 'store_id'])
+                          cat_features=['weekday', 'dept_id', 'state_id', 'store_id'],
+                          loss_function='RMSE')
 
 target = df['target']
 train_set = df.drop(['id', 'target', 'date'], axis='columns')
