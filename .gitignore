@@ -5,3 +5,4 @@ src/credentials/
 __pycache__/
 scratch/
 .pytest_cache/
+catboost_info/

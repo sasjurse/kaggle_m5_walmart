@@ -10,6 +10,9 @@ select
     ,c.event_name_2
     ,c.event_type_1
     ,c.event_type_2
+    ,c.snap_ca
+    ,c.snap_tx
+    ,c.snap_wi
     ,i.dept_id
     ,i.cat_id
     ,i.store_id

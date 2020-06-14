@@ -23,6 +23,7 @@ select
     ,weekday
     ,dept_id
     ,state_id
+    ,snap_CA
 from sales_ext
 where date between '2014-01-01' and '2014-06-01'
 and state_id = 'CA'
@@ -36,6 +37,7 @@ select
     ,weekday
     ,dept_id
     ,state_id
+    ,snap_CA
     ,sum(quantity) over w3 as quantity_last_3     
     ,sum(quantity) over w7 as quantity_last_7 
     ,sum(quantity) over w21 as quantity_last_21     
