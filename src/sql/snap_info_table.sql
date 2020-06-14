@@ -21,3 +21,6 @@ d1.date
 from base as d1
 left join base as d2 on d2.date < d1.date and d2.state_id = d1.state_id and d2.snap_status = True
 group by 1,2,3
+;
+
+ALTER TABLE snap_info ADD CONSTRAINT date_state_idx PRIMARY KEY(date, state_id)

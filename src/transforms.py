@@ -16,13 +16,13 @@ def snap_info():
     execute_sql_from_file('snap_info_table')
 
 
-def snap_info():
+def train():
     execute_sql('drop table if exists train')
     execute_sql_from_file('train_table')
-
 
 
 if __name__ == '__main__':
     sales_ext()
     sales_by_day()
     snap_info()
+    train()
