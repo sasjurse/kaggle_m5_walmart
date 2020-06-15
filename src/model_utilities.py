@@ -3,13 +3,13 @@ import pandas as pd
 from generics.postgres import dataframe_to_table_bulk, execute_sql, dataframe_from_sql, execute_sql_from_file
 
 
-START_TRAIN = datetime(year=2014, month=3, day=1)
-END_TRAIN = datetime(year=2014, month=7, day=1)
-START_TEST = datetime(year=2014, month=7, day=2)
-END_TEST = datetime(year=2014, month=7, day=10)
+START_TRAIN = datetime(year=2015, month=1, day=15)
+END_TRAIN = datetime(year=2015, month=7, day=1)
+START_TEST = datetime(year=2015, month=7, day=2)
+END_TEST = datetime(year=2015, month=7, day=10)
 
-START_VALIDATION = datetime(year=2014, month=8, day=1)
-VALIDATION_LENGTH = 60
+START_VALIDATION = datetime(year=2015, month=8, day=1)
+VALIDATION_LENGTH = 90
 
 
 def write_validation_results_to_db(model,

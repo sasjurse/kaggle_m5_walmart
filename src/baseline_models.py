@@ -8,11 +8,9 @@ execute_sql(sql)
 
 from datetime import timedelta
 
-from generics.postgres import execute_sql
-from model_utilities import VALIDATION_START_DATE, VALIDATION_LENGTH
+from model_utilities import START_VALIDATION, VALIDATION_LENGTH
 
-
-validation_end_date = VALIDATION_START_DATE + timedelta(days=VALIDATION_LENGTH-1)
+validation_end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH-1)
 
 sql = f"""
 insert into validation 
@@ -23,7 +21,7 @@ select
 ,train.quantity_last_7 / 7 as predicted
 from
     train
-where date between '{VALIDATION_START_DATE:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'
+where date between '{START_VALIDATION:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'
 """
 execute_sql(sql)
 
@@ -32,10 +30,10 @@ execute_sql(sql)
 from datetime import timedelta
 
 from generics.postgres import execute_sql
-from model_utilities import VALIDATION_START_DATE, VALIDATION_LENGTH
+from model_utilities import START_VALIDATION, VALIDATION_LENGTH
 
 
-validation_end_date = VALIDATION_START_DATE + timedelta(days=VALIDATION_LENGTH-1)
+validation_end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH-1)
 
 sql = f"""
 insert into validation 
@@ -46,6 +44,6 @@ select
 ,train.quantity_last_7 / 21 + train.quantity_last_3 / 9 + train.quantity_last_21 / 63 as predicted
 from
     train
-where date between '{VALIDATION_START_DATE:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'
+where date between '{START_VALIDATION:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'
 """
 execute_sql(sql)

@@ -16,6 +16,11 @@ def snap_info():
     execute_sql_from_file('snap_info_table')
 
 
+def weekday_averages():
+    execute_sql('drop table if exists weekday_average')
+    execute_sql_from_file('weekday_average_table')
+
+
 def train():
     execute_sql('drop table if exists train')
     execute_sql_from_file('train_table')
