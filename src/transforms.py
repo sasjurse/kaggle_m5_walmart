@@ -26,6 +26,12 @@ def snap_influence():
     execute_sql_from_file('snap_influence_table')
 
 
+def model_info():
+    execute_sql('drop table if exists model_info')
+    execute_sql_from_file('model_info')
+
+
+
 def train():
     execute_sql('drop table if exists train')
     execute_sql_from_file('train_table')
@@ -38,3 +44,4 @@ if __name__ == '__main__':
     weekday_averages()
     snap_influence()
     train()
+    model_info()

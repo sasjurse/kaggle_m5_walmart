@@ -46,11 +46,11 @@ plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_dept.html'))
 
 sql = """
 with base as (
-select 
+select
     date
     ,dept_id
-    ,sum(quantity) as quantity 
-from sales_by_day 
+    ,sum(quantity) as quantity
+from sales_by_day
 group by 1,2
 )
 
@@ -74,19 +74,19 @@ plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_dept_MA.html'))
 
 sql = """
 with base as (
-select 
+select
     date
     ,dept_id
-    ,sum(quantity) as quantity 
-from sales_by_day 
+    ,sum(quantity) as quantity
+from sales_by_day
 where store_id ='CA_1'
 group by 1,2
 )
 
-select 
+select
     date
     ,dept_id
-    ,sum(quantity) over w as quantity 
+    ,sum(quantity) over w as quantity
 from base
 window w as (partition by dept_id order by date desc rows between 3 preceding and 3 following)
 order by 1 desc"""
@@ -105,18 +105,18 @@ plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_dept_one_store_
 
 sql = """
 with base as (
-select 
+select
     date
     ,store_id
     ,sum(quantity) as quantity 
-from sales_by_day 
+from sales_by_day
 group by 1,2
 )
 
-select 
+select
     date
     ,store_id
-    ,sum(quantity) over w as quantity 
+    ,sum(quantity) over w as quantity
 from base
 window w as (partition by store_id order by date desc rows between 3 preceding and 3 following)
 order by 1 desc"""
@@ -133,7 +133,7 @@ plotly.offline.plot(fig, filename=str(plots_folder() / 'sales_by_store_MA.html')
 #%%
 
 sql = """
-select 
+select
 train.date
 ,validation.model_name
 ,SQRT(AVG(POWER((train.target - validation.predicted),2))) as rmse

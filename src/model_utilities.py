@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import pandas as pd
-from generics.postgres import dataframe_to_table_bulk, execute_sql, dataframe_from_sql, execute_sql_from_file
+from generics.postgres import dataframe_to_table_bulk, dataframe_to_table, execute_sql, dataframe_from_sql, execute_sql_from_file
 from generics.utilities import get_git_commit
 
 START_TRAIN = datetime(year=2015, month=1, day=15)
@@ -14,7 +14,8 @@ VALIDATION_SIZE = 600000
 
 
 def write_validation_results_to_db(model,
-                                   model_name,
+                                   model_name: str,
+                                   params: str,
                                    size=VALIDATION_SIZE,
                                    numeric_only=False):
     execute_sql_from_file('validation_table')
@@ -25,26 +26,26 @@ def write_validation_results_to_db(model,
 
     dataframe_to_table_bulk(df=predictions[['model_name', 'date', 'id', 'predicted']], table='validation')
 
+    execute_sql_from_file('model_info')
     model_info = pd.DataFrame(data={'model_name': [model_name],
-                                    'created_at': [datetime.now()],
+                                    'created_at': [f"{datetime.now():%Y-%m-%d}"],
+                                    'params': [str(params)],
                                     'rmse': [get_rmse(model_name)],
                                     'git_commit': [get_git_commit()]
                                     }
                               )
-    print('TTTTT')
-    print(model_info)
-    dataframe_to_table_bulk(model_info, table='model_info')
+    dataframe_to_table(model_info, table='model_info')
 
 
 def get_rmse(model_name: str):
     sql = f"""
-    select 
+    select
         SQRT(AVG(POWER((train.target - validation.predicted),2))) as RMSE
     from
         train
-    inner join 
+    inner join
         validation on train.date = validation.date and validation.id = train.id
-    where 
+    where
         validation.model_name = '{model_name}'
     """
 
@@ -53,7 +54,7 @@ def get_rmse(model_name: str):
 
 def get_daily_rmse(model_name: str):
     sql = f"""
-    select 
+    select
     train.date
     ,SQRT(AVG(POWER((train.target - validation.predicted),2))) as RMSE
     from
@@ -80,11 +81,11 @@ def collect_features(data_set: str, size=10000, numeric_only=False):
 
 def collect_from_train(size=10000, numeric_only=False, start_date=START_TRAIN, end_date=END_TRAIN):
     sql = f"""
-    select 
-    * 
-    from train 
+    select
+    *
+    from train
     where date between '{start_date:%Y-%m-%d}' and '{end_date:%Y-%m-%d}'
-    order by random() 
+    order by random()
     limit {size}
     """
     df = dataframe_from_sql(sql)

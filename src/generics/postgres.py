@@ -86,10 +86,10 @@ def dataframe_to_table_bulk(df: pd.DataFrame, table: str):
     cur = get_cursor()
 
     with tempfile.NamedTemporaryFile() as temp:
-        df.to_csv(temp.name, sep=',', date_format='%Y-%m-%d', index=False)
+        df.to_csv(temp.name, sep=';', date_format='%Y-%m-%d', index=False)
         temp.seek(0)
         temp.readline()  # don't read the column names as a row in copy_from
-        cur.copy_from(file=temp, table=table, sep=',')
+        cur.copy_from(file=temp, table=table, sep=';')
 
     cur.close()
     end = time.time()

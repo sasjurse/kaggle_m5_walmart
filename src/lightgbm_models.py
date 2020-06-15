@@ -27,7 +27,7 @@ model = LGBMRegressor(verbose=1, **params)
 
 model.fit(x, y, eval_set=(test_x, test_y))
 
-write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True)
+write_validation_results_to_db(model=model, model_name=model_name, params=str(params), numeric_only=True)
 
 #%%
 print(model_name)
@@ -50,7 +50,7 @@ execute_sql(sql)
 
 
 params = {'sub_feature': 0.9,
-          'n_estimators': 4000,
+          'n_estimators': 10,
           'learning_rate': 0.02,
           'objective': 'tweedie',
           'early_stopping_rounds': 100,
@@ -64,8 +64,10 @@ model = LGBMRegressor(verbose=1, **params)
 [test_x, test_y, ids] = collect_features(data_set='test', size=1000, numeric_only=True)
 
 model.fit(x, y, eval_set=(test_x, test_y))
+print('helli')
+print(str(params))
 
-write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True)
+write_validation_results_to_db(model=model, model_name=model_name, params=str(params),  numeric_only=True)
 
 #%%
 
@@ -99,4 +101,9 @@ model = LGBMRegressor(verbose=1, **params)
 
 model.fit(x, y, eval_set=(test_x, test_y))
 
-write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True)
+write_validation_results_to_db(model=model, model_name=model_name,  params=str(params), numeric_only=True)
+
+#%%
+
+hmm = str(params)
+print(hmm)

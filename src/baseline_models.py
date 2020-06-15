@@ -7,7 +7,6 @@ execute_sql(sql)
 #%%
 
 from datetime import timedelta
-
 from model_utilities import START_VALIDATION, VALIDATION_LENGTH
 
 validation_end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH-1)
@@ -29,7 +28,6 @@ execute_sql(sql)
 #%%
 
 from datetime import timedelta
-
 from model_utilities import START_VALIDATION, VALIDATION_LENGTH
 
 validation_end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH-1)
@@ -51,7 +49,6 @@ execute_sql(sql)
 #%%
 
 from datetime import timedelta
-
 from generics.postgres import execute_sql
 from model_utilities import START_VALIDATION, VALIDATION_LENGTH
 
