@@ -60,8 +60,8 @@ params = {'sub_feature': 0.9,
 
 model = LGBMRegressor(verbose=1, **params)
 
-[x, y, ids] = collect_features(data_set='train', size=100000, numeric_only=True)
-[test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=True)
+[x, y, ids] = collect_features(data_set='train', size=1000, numeric_only=True)
+[test_x, test_y, ids] = collect_features(data_set='test', size=1000, numeric_only=True)
 
 model.fit(x, y, eval_set=(test_x, test_y))
 

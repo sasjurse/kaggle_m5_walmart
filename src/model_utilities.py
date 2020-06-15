@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import pandas as pd
 from generics.postgres import dataframe_to_table_bulk, execute_sql, dataframe_from_sql, execute_sql_from_file
-
+from generics.utilities import get_git_commit
 
 START_TRAIN = datetime(year=2015, month=1, day=15)
 END_TRAIN = datetime(year=2015, month=7, day=1)
@@ -24,6 +24,31 @@ def write_validation_results_to_db(model,
     predictions['model_name'] = model_name
 
     dataframe_to_table_bulk(df=predictions[['model_name', 'date', 'id', 'predicted']], table='validation')
+
+    model_info = pd.DataFrame(data={'model_name': [model_name],
+                                    'created_at': [datetime.now()],
+                                    'rmse': [get_rmse(model_name)],
+                                    'git_commit': [get_git_commit()]
+                                    }
+                              )
+    print('TTTTT')
+    print(model_info)
+    dataframe_to_table_bulk(model_info, table='model_info')
+
+
+def get_rmse(model_name: str):
+    sql = f"""
+    select 
+        SQRT(AVG(POWER((train.target - validation.predicted),2))) as RMSE
+    from
+        train
+    inner join 
+        validation on train.date = validation.date and validation.id = train.id
+    where 
+        validation.model_name = '{model_name}'
+    """
+
+    return dataframe_from_sql(sql).iloc[0, 0]
 
 
 def get_daily_rmse(model_name: str):
