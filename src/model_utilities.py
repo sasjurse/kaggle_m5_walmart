@@ -10,11 +10,12 @@ END_TEST = datetime(year=2015, month=7, day=10)
 
 START_VALIDATION = datetime(year=2015, month=8, day=1)
 VALIDATION_LENGTH = 90
+VALIDATION_SIZE = 600000
 
 
 def write_validation_results_to_db(model,
                                    model_name,
-                                   size=10000,
+                                   size=VALIDATION_SIZE,
                                    numeric_only=False):
     execute_sql_from_file('validation_table')
     [val_x, val_y, ids] = collect_features(data_set='validation', size=size, numeric_only=numeric_only)

@@ -25,7 +25,7 @@ model.fit(x, y, eval_set=(test_x, test_y))
 
 yolo = model.get_feature_importance(prettified=True)
 
-write_validation_results_to_db(model=model, model_name='CatBoost', numeric_only=False, size=300000)
+write_validation_results_to_db(model=model, model_name='CatBoost', numeric_only=False)
 
 
 #%%

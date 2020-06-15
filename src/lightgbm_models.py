@@ -3,7 +3,7 @@ from lightgbm import LGBMRegressor
 from model_utilities import collect_features, write_validation_results_to_db
 import pandas as pd
 
-model_name = 'LGBM_800_2'
+model_name = 'LGBM_1200_1'
 
 execute_sql_from_file('validation_table')
 sql = f"DELETE FROM validation where model_name = '{model_name}'"
@@ -21,13 +21,13 @@ params = {'sub_feature': 0.9,
 
 model = LGBMRegressor(verbose=1, **params)
 
-[x, y, ids] = collect_features(data_set='train', size=800000, numeric_only=True)
+[x, y, ids] = collect_features(data_set='train', size=12000000, numeric_only=True)
 [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=True)
 
 
 model.fit(x, y, eval_set=(test_x, test_y))
 
-write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True, size=300000)
+write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True)
 
 #%%
 print(model_name)
@@ -42,7 +42,7 @@ from lightgbm import LGBMRegressor
 from model_utilities import collect_features, write_validation_results_to_db
 
 
-model_name = 'LGBM_100_3'
+model_name = 'LGBM_100_4'
 
 execute_sql_from_file('validation_table')
 sql = f"DELETE FROM validation where model_name = '{model_name}'"
@@ -65,7 +65,7 @@ model = LGBMRegressor(verbose=1, **params)
 
 model.fit(x, y, eval_set=(test_x, test_y))
 
-write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True, size=300000)
+write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True)
 
 #%%
 
@@ -74,7 +74,7 @@ from lightgbm import LGBMRegressor
 from model_utilities import collect_features, write_validation_results_to_db
 
 
-model_name = 'LGBM_diff'
+model_name = 'LGBM_diff_1'
 
 execute_sql_from_file('validation_table')
 sql = f"DELETE FROM validation where model_name = '{model_name}'"
@@ -99,4 +99,4 @@ model = LGBMRegressor(verbose=1, **params)
 
 model.fit(x, y, eval_set=(test_x, test_y))
 
-write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True, size=300000)
+write_validation_results_to_db(model=model, model_name=model_name, numeric_only=True)
