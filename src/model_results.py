@@ -1,6 +1,7 @@
 from generics.postgres import dataframe_from_sql
 
 #%%
+from generics.postgres import dataframe_from_sql
 
 sql = """
 select 
@@ -43,6 +44,7 @@ calendar = dataframe_from_sql('select * from calendar order by date')
 
 
 #%%
+from generics.postgres import dataframe_from_sql
 
 sql = """
 select 

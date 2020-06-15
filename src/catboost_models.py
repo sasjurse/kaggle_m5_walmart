@@ -1,7 +1,12 @@
-from src.generics.postgres import dataframe_from_sql
+from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file
 from catboost import CatBoostRegressor
 from datetime import datetime
-from src.model_utilities import collect_features, write_validation_results_to_db
+from model_utilities import collect_features, write_validation_results_to_db
+
+
+execute_sql_from_file('validation_table')
+sql = "DELETE FROM validation where model_name = 'CatBoost'"
+execute_sql(sql)
 
 [test_x, test_y, ids] = collect_features(data_set='test', size=400000, numeric_only=False)
 [x, y, ids] = collect_features(data_set='train', size=40000, numeric_only=False)
@@ -18,21 +23,16 @@ model = CatBoostRegressor(verbose=True,
 # train the model
 model.fit(x, y, eval_set=(test_x, test_y))
 
-
 yolo = model.get_feature_importance(prettified=True)
 
-write_validation_results_to_db(model=model, model_name='CatBoost_5', numeric_only=False, size=100000)
+write_validation_results_to_db(model=model, model_name='CatBoost', numeric_only=False, size=300000)
 
-
-#%%
-
-from src.generics.postgres import execute_sql
-execute_sql('drop table validation')
 
 #%%
 
 from model_utilities import get_daily_rmse
 
 df_cb = get_daily_rmse('CatBoost')
+print(df_cb)
 
 #%%
