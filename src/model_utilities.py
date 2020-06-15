@@ -44,3 +44,21 @@ def get_daily_rmse(model_name: str):
     """
 
     return dataframe_from_sql(sql)
+
+
+def retrieve_train_set(size=10000, numeric_only=False, start_train = START_TRAIN, end_train = END_TRAIN):
+    sql = f"""
+    select 
+    * 
+    from train 
+    where date between '{start_train:%Y-%m-%d}' and '{end_train:%Y-%m-%d}'
+    order by random() 
+    limit {size}
+    """
+    df = dataframe_from_sql(sql)
+    y = df['target']
+    if numeric_only:
+        x = df[[col for col in df.select_dtypes('number').columns if col != 'target']]
+    else:
+        x = df.drop(['id', 'target', 'date'], axis='columns')
+    return x, y
