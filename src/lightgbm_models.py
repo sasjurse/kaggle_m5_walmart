@@ -1,21 +1,30 @@
-from src.generics.postgres import dataframe_from_sql
+from src.generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file
 from lightgbm import LGBMRegressor
 from datetime import datetime
-from src.model_utilities import retrieve_train_set, write_validation_results_to_db
+from src.model_utilities import collect_features, write_validation_results_to_db
 
 
-sql = f"select * from train where date between '2014-07-02' and '2014-07-25' order by random() limit 5000"
-df_val = dataframe_from_sql(sql)
-df_val_y = df_val['target']
-df_val_x = df_val[[col for col in df_val.select_dtypes('number').columns if col != 'target']]
+execute_sql_from_file('validation_table')
+sql = "DELETE FROM validation where model_name = 'LGBM'"
+execute_sql(sql)
 
-model = LGBMRegressor(verbose=1)
 
-[x, y] = retrieve_train_set(size=10000, numeric_only=True)
+params = {'sub_feature': 0.9,
+          'n_estimators': 4000,
+          'learning_rate': 0.02,
+          'objective': 'tweedie',
+          'early_stopping_rounds': 100
+          }
 
-model.fit(x, y, eval_set=(df_val_x, df_val_y))
+[test_x, test_y, ids] = collect_features(data_set='test', size=400000, numeric_only=True)
+model = LGBMRegressor(verbose=1, **params)
 
-write_validation_results_to_db(model=model, model_name='LGBM')
+[x, y, ids] = collect_features(data_set='train', size=20000, numeric_only=True)
+
+model.fit(x, y, eval_set=(test_x, test_y))
+
+write_validation_results_to_db(model=model, model_name='LGBM', numeric_only=True, size=100000)
 
 #%%
 
+hmm = model.best_iteration_
