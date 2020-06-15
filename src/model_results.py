@@ -12,7 +12,7 @@ from
 train
 inner join validation on train.date = validation.date and validation.id = train.id
 group by 1
-order by 1 desc"""
+order by 2 desc"""
 
 
 df_totals = dataframe_from_sql(sql)
