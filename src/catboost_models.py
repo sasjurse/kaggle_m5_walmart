@@ -1,25 +1,10 @@
 from src.generics.postgres import dataframe_from_sql
 from catboost import CatBoostRegressor
 from datetime import datetime
-from src.model_utilities import START_TRAIN, END_TRAIN, write_validation_results_to_db
+from src.model_utilities import collect_features, write_validation_results_to_db
 
-start_train = START_TRAIN
-end_train = END_TRAIN
-
-sql = f"""
-select 
-* 
-from train 
-where date between '{start_train:%Y-%m-%d}' and '{end_train:%Y-%m-%d}'
-order by random() 
-limit 600000
-"""
-
-df = dataframe_from_sql(sql)
-
-df_val = dataframe_from_sql(f"select * from train where date between '2014-07-02' and '2014-07-25' order by random() limit 100000")
-df_val_y = df_val['target']
-df_val_x = df_val.drop(['id', 'target', 'date'], axis='columns')
+[test_x, test_y, ids] = collect_features(data_set='test', size=400000, numeric_only=False)
+[x, y, ids] = collect_features(data_set='train', size=40000, numeric_only=False)
 
 model = CatBoostRegressor(verbose=True,
                           cat_features=['weekday', 'dept_id', 'state_id', 'store_id'],
@@ -30,16 +15,13 @@ model = CatBoostRegressor(verbose=True,
                           min_data_in_leaf=20
                           )
 
-target = df['target']
-train_set = df.drop(['id', 'target', 'date'], axis='columns')
 # train the model
-model.fit(train_set, target, eval_set=(df_val_x, df_val_y))
+model.fit(x, y, eval_set=(test_x, test_y))
 
-print(train_set.columns)
 
 yolo = model.get_feature_importance(prettified=True)
 
-write_validation_results_to_db(model=model, model_name='CatBoost_5')
+write_validation_results_to_db(model=model, model_name='CatBoost_5', numeric_only=False, size=100000)
 
 
 #%%

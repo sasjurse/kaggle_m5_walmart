@@ -16,10 +16,11 @@ params = {'sub_feature': 0.9,
           'early_stopping_rounds': 100
           }
 
-[test_x, test_y, ids] = collect_features(data_set='test', size=400000, numeric_only=True)
+
 model = LGBMRegressor(verbose=1, **params)
 
-[x, y, ids] = collect_features(data_set='train', size=20000, numeric_only=True)
+[test_x, test_y, ids] = collect_features(data_set='test', size=400000, numeric_only=True)
+[x, y, ids] = collect_features(data_set='train', size=40000, numeric_only=True)
 
 model.fit(x, y, eval_set=(test_x, test_y))
 
