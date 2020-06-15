@@ -25,9 +25,9 @@ model = CatBoostRegressor(verbose=True,
                           cat_features=['weekday', 'dept_id', 'state_id', 'store_id'],
                           loss_function='RMSE',
                           learning_rate=0.002,
-                          iterations=1200,
+                          iterations=5000,
                           random_strength=2,
-                          min_data_in_leaf=10
+                          min_data_in_leaf=20
                           )
 
 target = df['target']
@@ -39,12 +39,7 @@ print(train_set.columns)
 
 yolo = model.get_feature_importance(prettified=True)
 
-
-#%%
-
-from model_utilities import write_validation_results_to_db
-
-write_validation_results_to_db(model=model, model_name='CatBoost_6')
+write_validation_results_to_db(model=model, model_name='CatBoost_5')
 
 
 #%%

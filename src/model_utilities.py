@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import pandas as pd
-from src.generics.postgres import dataframe_to_table_bulk, execute_sql, dataframe_from_sql, execute_sql_from_file
+from generics.postgres import dataframe_to_table_bulk, execute_sql, dataframe_from_sql, execute_sql_from_file
 
 
 START_TRAIN = datetime(year=2014, month=3, day=1)

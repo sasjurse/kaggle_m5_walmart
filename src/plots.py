@@ -149,3 +149,18 @@ df = dataframe_from_sql(sql)
 fig = px.line(df, x="date", y="rmse", color='model_name')
 
 plotly.offline.plot(fig, filename=str(plots_folder() / 'RMSE_by_model.html'))
+
+#%%
+
+sql = """
+select 
+validation.model_name
+,SQRT(AVG(POWER((train.target - validation.predicted),2))) as rmse
+from
+train
+inner join validation on train.date = validation.date and validation.id = train.id
+group by 1
+order by 1 desc"""
+
+
+df_totals = dataframe_from_sql(sql)
