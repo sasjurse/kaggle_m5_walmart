@@ -25,6 +25,29 @@ where date between '{START_VALIDATION:%Y-%m-%d}' and '{validation_end_date:%Y-%m
 """
 execute_sql(sql)
 
+
+#%%
+
+from datetime import timedelta
+
+from model_utilities import START_VALIDATION, VALIDATION_LENGTH
+
+validation_end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH-1)
+
+sql = f"""
+insert into validation 
+select
+'wa_adjusted_quantity_last_7' as model_name
+,train.date
+,train.id
+,train.wa_adjusted_quantity_last_7/ 7 as predicted
+from
+    train
+where date between '{START_VALIDATION:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'
+"""
+execute_sql(sql)
+
+
 #%%
 
 from datetime import timedelta
