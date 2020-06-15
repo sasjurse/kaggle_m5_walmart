@@ -15,7 +15,7 @@ params = {'sub_feature': 0.9,
           'learning_rate': 0.02,
           'objective': 'tweedie',
           'early_stopping_rounds': 100,
-          'min_child_samples': 50
+          'min_child_samples': 40
           }
 
 
