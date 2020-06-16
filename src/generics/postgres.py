@@ -52,11 +52,14 @@ def execute_sql(sql: str):
     logging.info(f'execute_sql took {round(end-start)} seconds')
 
 
-def create_sa_engine():
+def create_sa_string(database='postgres'):
     set_secrets_from_local()
-    db_string = f"postgresql+psycopg2://postgres:{os.environ['POSTGRES_PASSWORD']}@" \
-                f"{os.environ['POSTGRES_SERVICE_HOST']}:5432"
+    return f"postgresql+psycopg2://postgres:{os.environ['POSTGRES_PASSWORD']}@" \
+           f"{os.environ['POSTGRES_SERVICE_HOST']}:5432/{database}"
 
+
+def create_sa_engine():
+    db_string = create_sa_string()
     return sa.create_engine(db_string)
 
 

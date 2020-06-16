@@ -63,6 +63,10 @@ def import_item_info():
     print(f'import_sales took {round(end - start)} seconds')
 
 
+def init_db():
+    execute_sql("create database 'optuna'")
+
+
 if __name__ == '__main__':
     import_calendar()
     print('calendar imported')
@@ -72,3 +76,4 @@ if __name__ == '__main__':
     print('sales imported')
     import_item_info()
     print('item info imported')
+    init_db()
