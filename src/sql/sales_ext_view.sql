@@ -14,6 +14,7 @@ select
     ,c.snap_tx
     ,c.snap_wi
     ,i.dept_id
+    ,i.item_id
     ,i.cat_id
     ,i.store_id
     ,i.state_id

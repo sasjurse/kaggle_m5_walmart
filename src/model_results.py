@@ -31,7 +31,7 @@ validation.model_name
 from
 train
 inner join validation on train.date = validation.date and validation.id = train.id
-where validation.model_name = 'CatBoost_5'
+where validation.model_name = 'LGBM_1200'
 group by 1,2,3,4,5
 order by 4,2 desc"""
 
@@ -66,5 +66,6 @@ from generics.postgres import dataframe_from_sql
 df_mi = dataframe_from_sql('select model_name, rmse, created_at from model_info order by 2 desc')
 
 #%%
+
 from generics.postgres import dataframe_from_sql
 df_mi = dataframe_from_sql('select * from model_info order by rmse desc')

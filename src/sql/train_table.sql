@@ -18,6 +18,7 @@ select
     ,quantity_last_7 * sinf.relative_median as sinf_adjusted_quantity_last_7
     ,lags.target
 from sales_ext as se
+inner join prices on se.store_id = prices.store_id and se.item_id = prices.item_id and se.wm_yr_wk = prices.wm_yr_wk
 left join snap_info as si on se.state_id = si.state_id and si.date = se.date
 left join lags on se.date = lags.date and se.id = lags.id
 left join weekday_average as wa
