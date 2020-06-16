@@ -7,8 +7,8 @@ def eval_model(model, model_name, params, numeric_only=False):
     assert isinstance(model_name, str), 'model_name should be a string'
     assert isinstance(params, dict), 'params should be a dict'
 
-    [x, y, ids] = collect_features(data_set='train', size=8000, numeric_only=numeric_only)
-    [test_x, test_y, ids] = collect_features(data_set='test', size=8000, numeric_only=numeric_only)
+    [x, y, ids] = collect_features(data_set='train', size=800000, numeric_only=numeric_only)
+    [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=numeric_only)
 
     model.fit(x, y, eval_set=(test_x, test_y))
 
@@ -34,12 +34,12 @@ def objective(trial):
 
     model = CatBoostRegressor(verbose=True, **params)
 
-    score = eval_model(model=model, model_name='CatBoost', params=params)
+    score = eval_model(model=model, model_name='CatBoost_2', params=params)
     return score
 
 
 study = optuna.create_study(direction='minimize',
-                            study_name='CatBoost',
+                            study_name='CatBoost_2',
                             storage=create_sa_string(database='optuna'),
                             load_if_exists=True)
 
