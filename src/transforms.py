@@ -31,6 +31,10 @@ def model_info():
     execute_sql_from_file('model_info')
 
 
+def lags():
+    execute_sql('drop table if exists lags')
+    execute_sql_from_file('lags')
+
 
 def train():
     execute_sql('drop table if exists train')
@@ -43,5 +47,6 @@ if __name__ == '__main__':
     snap_info()
     weekday_averages()
     snap_influence()
+    lags()
     train()
     model_info()

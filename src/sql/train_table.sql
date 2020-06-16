@@ -1,50 +1,32 @@
 create table train as
-with base as (
 select
-    id
-    ,quantity
-    ,sales_ext.date
-    ,weekday
-    ,store_id
-    ,dept_id
-    ,sales_ext.state_id
+    se.id
+    ,se.quantity
+    ,se.date
+    ,se.weekday
+    ,se.store_id
+    ,se.dept_id
+    ,se.state_id
     ,si.snap_status
     ,si.days_since_snap
-from sales_ext
-left join snap_info as si on sales_ext.state_id = si.state_id and si.date = sales_ext.date
-where sales_ext.date between '2014-10-01' and '2016-01-31'
-),
-
-aggregates as (
-select
-    id
-    ,date
-    ,quantity as target
-    ,base.weekday
-    ,base.store_id
-    ,base.dept_id
-    ,state_id
-    ,snap_status
-    ,days_since_snap
+    ,lags.quantity_last_1
+    ,lags.quantity_last_3
+    ,lags.quantity_last_7
+    ,lags.quantity_last_21
     ,wa.relative_median
-    ,sum(quantity) over w3 as quantity_last_3
-    ,sum(quantity) over w7 as quantity_last_7
-    ,sum(quantity) over w7 * wa.relative_median as wa_adjusted_quantity_last_7
-    ,sum(quantity) over w21 as quantity_last_21
-    ,sum(case when snap_status then quantity else 0 end ) over w21 as quantity_last_21_SNAP
-from base
+    ,quantity_last_7 * wa.relative_median as wa_adjusted_quantity_last_7
+    ,sinf.relative_median as sinf_relative_median
+    ,quantity_last_7 * sinf.relative_median as sinf_adjusted_quantity_last_7
+    ,lags.target
+from sales_ext as se
+left join snap_info as si on se.state_id = si.state_id and si.date = se.date
+left join lags on se.date = lags.date and se.id = lags.id
 left join weekday_average as wa
-    on base.weekday = wa.weekday and wa.dept_id = base.dept_id and wa.store_id = base.store_id
-window
-    w3 as (partition by id order by date asc rows between 3 preceding and 1 preceding)
-    ,w7 as (partition by id order by date asc rows between 7 preceding and 1 preceding)
-    ,w21 as (partition by id order by date asc rows between 21 preceding and 1 preceding)
-)
-
-select
-*
-from aggregates
-where date > '2015-01-01'
+    on se.weekday = wa.weekday and wa.dept_id = se.dept_id and wa.store_id = se.store_id
+left join snap_influence as sinf
+    on se.dept_id = sinf.dept_id and se.store_id = sinf.store_id
+        and sinf.snap_status = si.snap_status
+where se.date between '2015-01-01' and '2016-01-31'
 ;
 
 ALTER TABLE train ADD CONSTRAINT date_item_id_pkey PRIMARY KEY(date, id)

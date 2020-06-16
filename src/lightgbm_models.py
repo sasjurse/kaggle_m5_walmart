@@ -22,6 +22,7 @@ params = {'sub_feature': 0.9,
 model = LGBMRegressor(verbose=1, **params)
 
 [x, y, ids] = collect_features(data_set='train', size=12000000, numeric_only=True)
+print('number of rows', len(x))
 [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=True)
 
 
@@ -96,7 +97,7 @@ params = {'sub_feature': 0.9,
 model = LGBMRegressor(verbose=1, **params)
 
 
-[x, y, ids] = collect_features(data_set='train', size=600000, numeric_only=True)
+[x, y, ids] = collect_features(data_set='train', size=900000, numeric_only=True)
 [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=True)
 
 model.fit(x, y, eval_set=(test_x, test_y))
