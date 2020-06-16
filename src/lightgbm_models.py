@@ -31,6 +31,7 @@ model.fit(x, y, eval_set=(test_x, test_y))
 write_validation_results_to_db(model=model, model_name=model_name, params=str(params), numeric_only=True)
 
 #%%
+import pandas as pd
 print(model_name)
 importance = pd.DataFrame(data={'feature': x.columns, 'importance': model.feature_importances_})
 importance.sort_values(by='importance', inplace=True)
@@ -51,7 +52,7 @@ execute_sql(sql)
 
 
 params = {'sub_feature': 0.9,
-          'n_estimators': 10,
+          'n_estimators': 1000,
           'learning_rate': 0.02,
           'objective': 'tweedie',
           'early_stopping_rounds': 100,
@@ -61,8 +62,8 @@ params = {'sub_feature': 0.9,
 
 model = LGBMRegressor(verbose=1, **params)
 
-[x, y, ids] = collect_features(data_set='train', size=1000, numeric_only=True)
-[test_x, test_y, ids] = collect_features(data_set='test', size=1000, numeric_only=True)
+[x, y, ids] = collect_features(data_set='train', size=100000, numeric_only=True)
+[test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=True)
 
 model.fit(x, y, eval_set=(test_x, test_y))
 print('helli')

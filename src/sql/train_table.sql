@@ -1,7 +1,6 @@
 create table train as
 select
     se.id
-    ,se.quantity
     ,se.date
     ,se.weekday
     ,se.store_id

@@ -63,4 +63,4 @@ df_weekday = dataframe_from_sql(sql)
 
 #%%
 from generics.postgres import dataframe_from_sql
-df_mi = dataframe_from_sql('select model_name, rmse from model_info order by 2 desc')
+df_mi = dataframe_from_sql('select model_name, rmse, created_at from model_info order by 2 desc')
