@@ -60,3 +60,7 @@ order by 1 desc"""
 
 
 df_weekday = dataframe_from_sql(sql)
+
+#%%
+
+df_mi = dataframe_from_sql('select * from model_info')

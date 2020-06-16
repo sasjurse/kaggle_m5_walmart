@@ -3,7 +3,7 @@ from lightgbm import LGBMRegressor
 from model_utilities import collect_features, write_validation_results_to_db
 import pandas as pd
 
-model_name = 'LGBM_1200_1'
+model_name = 'LGBM_1200'
 
 execute_sql_from_file('validation_table')
 sql = f"DELETE FROM validation where model_name = '{model_name}'"
@@ -42,7 +42,7 @@ from lightgbm import LGBMRegressor
 from model_utilities import collect_features, write_validation_results_to_db
 
 
-model_name = 'LGBM_100_4'
+model_name = 'LGBM_100'
 
 execute_sql_from_file('validation_table')
 sql = f"DELETE FROM validation where model_name = '{model_name}'"
@@ -76,7 +76,7 @@ from lightgbm import LGBMRegressor
 from model_utilities import collect_features, write_validation_results_to_db
 
 
-model_name = 'LGBM_diff_1'
+model_name = 'LGBM_diff'
 
 execute_sql_from_file('validation_table')
 sql = f"DELETE FROM validation where model_name = '{model_name}'"
@@ -104,6 +104,3 @@ model.fit(x, y, eval_set=(test_x, test_y))
 write_validation_results_to_db(model=model, model_name=model_name,  params=str(params), numeric_only=True)
 
 #%%
-
-hmm = str(params)
-print(hmm)

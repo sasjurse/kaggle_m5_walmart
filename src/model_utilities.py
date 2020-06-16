@@ -28,8 +28,9 @@ def write_validation_results_to_db(model,
 
     execute_sql_from_file('model_info')
     model_info = pd.DataFrame(data={'model_name': [model_name],
-                                    'created_at': [f"{datetime.now():%Y-%m-%d}"],
+                                    'created_at': [f"{datetime.now():%Y-%m-%d %H:%M}"],
                                     'params': [str(params)],
+                                    'features': [str(val_x.columns)],
                                     'rmse': [get_rmse(model_name)],
                                     'git_commit': [get_git_commit()]
                                     }
