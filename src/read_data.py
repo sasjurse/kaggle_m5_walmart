@@ -64,7 +64,7 @@ def import_item_info():
 
 
 def init_db():
-    execute_sql("create database 'optuna'")
+    execute_sql("create database optuna")
 
 
 if __name__ == '__main__':
