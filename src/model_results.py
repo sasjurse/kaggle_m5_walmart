@@ -62,5 +62,5 @@ order by 1 desc"""
 df_weekday = dataframe_from_sql(sql)
 
 #%%
-
-df_mi = dataframe_from_sql('select * from model_info')
+from generics.postgres import dataframe_from_sql
+df_mi = dataframe_from_sql('select model_name, rmse from model_info order by 2 desc')

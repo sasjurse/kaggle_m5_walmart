@@ -18,7 +18,11 @@ def write_validation_results_to_db(model,
                                    params: str,
                                    size=VALIDATION_SIZE,
                                    numeric_only=False):
+
     execute_sql_from_file('validation_table')
+    sql = f"DELETE FROM validation where model_name = '{model_name}'"
+    execute_sql(sql)
+
     [val_x, val_y, ids] = collect_features(data_set='validation', size=size, numeric_only=numeric_only)
     pred_values = model.predict(val_x)
     predictions = pd.DataFrame(data={'id': ids['id'], 'predicted': pred_values, 'date': ids['date']})

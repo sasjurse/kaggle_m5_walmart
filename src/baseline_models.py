@@ -1,69 +1,35 @@
-from generics.postgres import execute_sql, execute_sql_from_file
-
-execute_sql_from_file('validation_table')
-sql = "DELETE FROM validation where model_name = 'quantity_last_7'"
-execute_sql(sql)
-
-#%%
-
-from datetime import timedelta
-from model_utilities import START_VALIDATION, VALIDATION_LENGTH
-
-validation_end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH-1)
-
-sql = f"""
-insert into validation 
-select
-'quantity_last_7' as model_name
-,train.date
-,train.id
-,train.quantity_last_7 / 7 as predicted
-from
-    train
-where date between '{START_VALIDATION:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'
-"""
-execute_sql(sql)
+from model_utilities import write_validation_results_to_db
 
 
-#%%
+class SingleColumnPredictor:
 
-from datetime import timedelta
-from model_utilities import START_VALIDATION, VALIDATION_LENGTH
+    def __init__(self, column_name, divisor=None):
+        self.column_name = column_name
+        if divisor:
+            self.divisor = divisor
 
-validation_end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH-1)
-
-sql = f"""
-insert into validation 
-select
-'wa_adjusted_quantity_last_7' as model_name
-,train.date
-,train.id
-,train.wa_adjusted_quantity_last_7/ 7 as predicted
-from
-    train
-where date between '{START_VALIDATION:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'
-"""
-execute_sql(sql)
+    def predict(self, train):
+        if self.divisor:
+            return train[self.column_name] / self.divisor
+        else:
+            return train
 
 
-#%%
+column = 'wa_adjusted_quantity_last_7'
+write_validation_results_to_db(model=SingleColumnPredictor(column, divisor=7),
+                               model_name=column,
+                               params='Single column'
+                               )
 
-from datetime import timedelta
-from generics.postgres import execute_sql
-from model_utilities import START_VALIDATION, VALIDATION_LENGTH
+column = 'quantity_last_7'
+write_validation_results_to_db(model=SingleColumnPredictor(column, divisor=7),
+                               model_name=column,
+                               params='Single column'
+                               )
 
+column = 'quantity_last_3'
+write_validation_results_to_db(model=SingleColumnPredictor(column, divisor=3),
+                               model_name=column,
+                               params='Single column'
+                               )
 
-validation_end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH-1)
-
-sql = f"""
-insert into validation 
-select
-'weighted_quantity' as model_name
-,train.date
-,train.id
-,train.quantity_last_7 / 21 + train.quantity_last_3 / 9 + train.quantity_last_21 / 63 as predicted
-from
-    train
-where date between '{START_VALIDATION:%Y-%m-%d}' and '{validation_end_date:%Y-%m-%d}'
-"""
-execute_sql(sql)
