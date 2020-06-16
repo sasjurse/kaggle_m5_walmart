@@ -13,13 +13,17 @@ select
     id
     ,date
     ,quantity as target
+    ,sum(quantity) over f10 as target10
+    ,sum(quantity) over f20 as target20
     ,sum(quantity) over w1 as quantity_last_1
     ,sum(quantity) over w3 as quantity_last_3
     ,sum(quantity) over w7 as quantity_last_7
     ,sum(quantity) over w21 as quantity_last_21
 from base
 window
-    w1 as (partition by id order by date asc rows between 1 preceding and 1 preceding)
+    f10 as (partition by id order by date asc rows between 10 following and 10 following)
+    ,f20 as (partition by id order by date asc rows between 20 following and 20 following)
+    ,w1 as (partition by id order by date asc rows between 1 preceding and 1 preceding)
     ,w3 as (partition by id order by date asc rows between 3 preceding and 1 preceding)
     ,w7 as (partition by id order by date asc rows between 7 preceding and 1 preceding)
     ,w21 as (partition by id order by date asc rows between 21 preceding and 1 preceding)

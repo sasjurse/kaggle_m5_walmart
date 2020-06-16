@@ -10,12 +10,13 @@ sql = f"DELETE FROM validation where model_name = '{model_name}'"
 execute_sql(sql)
 
 
-params = {'sub_feature': 0.9,
+params = {'feature_fraction': 0.58,
+          'bagging_fraction': 0.47,
           'n_estimators': 4000,
-          'learning_rate': 0.02,
+          'learning_rate': 0.0285,
           'objective': 'tweedie',
           'early_stopping_rounds': 100,
-          'min_child_samples': 40
+          'min_child_samples': 5
           }
 
 
@@ -51,12 +52,13 @@ sql = f"DELETE FROM validation where model_name = '{model_name}'"
 execute_sql(sql)
 
 
-params = {'sub_feature': 0.9,
-          'n_estimators': 1000,
-          'learning_rate': 0.02,
+params = {'feature_fraction': 0.58,
+          'bagging_fraction': 0.47,
+          'n_estimators': 4000,
+          'learning_rate': 0.0285,
           'objective': 'tweedie',
           'early_stopping_rounds': 100,
-          'min_child_samples': 50
+          'min_child_samples': 5
           }
 
 

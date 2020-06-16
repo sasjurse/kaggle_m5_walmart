@@ -10,7 +10,7 @@ def objective(trial):
     model_name = 'optuna'
 
     params = {'n_estimators': 2000,
-              'learning_rate':  trial.suggest_uniform('feature_fraction', 0.005, 0.04),
+              'learning_rate':  trial.suggest_uniform('learning_rate', 0.005, 0.04),
               'objective': 'tweedie',
               'early_stopping_rounds': 100,
               'feature_fraction': trial.suggest_uniform('feature_fraction', 0.4, 1.0),
