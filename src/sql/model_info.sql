@@ -5,5 +5,4 @@ create unlogged table if not exists model_info (
     ,features TEXT
     ,rmse double precision
     ,git_commit TEXT
-    ,PRIMARY KEY (model_name, created_at)
 )

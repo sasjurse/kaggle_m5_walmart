@@ -5,7 +5,7 @@ dash-html-components==1.0.3
 lightgbm==2.3.1
 flake8==3.7.9 # dev requirement, but not bothering with separate requirements files
 gunicorn==20.0.4
-requests==2.23.0
+optuna==1.5.0
 pandas==1.0.3
 pandas-profiling==2.8.0
 pytest==5.4.1 # dev requirement, but not bothering with separate requirements files
