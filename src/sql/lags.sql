@@ -1,7 +1,7 @@
 create unlogged table lags(
 numeric_id Integer
 ,date date
-,quantity smallint
+,target smallint
 ,target10 smallint
 ,target20 smallint
 ,avg_last_1 real
