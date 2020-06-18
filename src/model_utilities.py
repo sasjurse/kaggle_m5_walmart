@@ -127,7 +127,9 @@ def eval_model(model, model_name, params, train_size=800000, numeric_only=False,
     assert isinstance(params, dict), 'params should be a dict'
 
     [x, y, ids] = collect_features(data_set='train', size=train_size, numeric_only=numeric_only)
+    del ids
     [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=numeric_only)
+    del ids
 
     if fit_params:
         model.fit(x, y, eval_set=(test_x, test_y), **fit_params)

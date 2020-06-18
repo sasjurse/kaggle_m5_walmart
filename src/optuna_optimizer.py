@@ -18,9 +18,8 @@ def objective(trial):
               }
 
     train_sample = dataframe_from_sql('select * from train limit 1')
-    fit_params = {'categorical_feature':get_categorical_columns(train_sample)}
 
-    train_size = trial.suggest_int('train_size', 400000, 10000000)
+    train_size = trial.suggest_int('train_size', 400000, 600000)
     params['train_size'] = train_size
 
     model = LGBMRegressor(verbose=1, **params)
@@ -31,10 +30,10 @@ def objective(trial):
 
 
 study = optuna.create_study(direction='minimize',
-                            study_name='LGBM_optuna',
+                            study_name='LGBM_optuna_2',
                             storage=create_sa_string(database='optuna'),
                             load_if_exists=True)
 
-study.optimize(objective, n_trials=2)
+study.optimize(objective, n_trials=100)
 
 #%%
