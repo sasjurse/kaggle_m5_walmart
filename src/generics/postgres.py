@@ -3,9 +3,24 @@ import os
 import psycopg2
 import pandas as pd
 import sqlalchemy as sa
+import sys
 import tempfile
 import time
 from generics.file_locations import sql_folder
+
+
+def output_logging():
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)-8s %(message)s',
+        level=logging.INFO,
+        datefmt='%Y-%m-%d %H:%M:%S')
+
+    fh = logging.StreamHandler(sys.stdout)
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s %(message)s'))
+
+
+output_logging()
 
 
 def set_secrets_from_local():

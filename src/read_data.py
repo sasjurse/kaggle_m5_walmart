@@ -40,9 +40,13 @@ def import_sales():
     df.drop(['item_id', 'dept_id', 'cat_id', 'store_id', 'state_id'], inplace=True, axis='columns')
     df2 = pd.melt(df, id_vars=['id'])
 
+    execute_sql('drop view if exists sales_ext')
     execute_sql('drop table if exists sales_raw')
     execute_sql_from_file('sales_raw')
     dataframe_to_table_bulk(df2, 'sales_raw')
+
+    execute_sql_from_file('sales')
+    execute_sql('drop table sales_raw')
 
     end = time.time()
     print(f'import_sales took {round(end - start)} seconds')

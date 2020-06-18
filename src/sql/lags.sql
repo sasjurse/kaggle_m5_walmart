@@ -4,8 +4,8 @@ select
     id
     ,quantity
     ,date
-from sales_ext
-where sales_ext.date between '2014-10-01' and '2016-01-31'
+from sales
+where sales.date between '2014-10-01' and '2016-01-31'
 ),
 
 aggregates as (

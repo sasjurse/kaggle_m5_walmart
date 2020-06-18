@@ -19,7 +19,7 @@ select
     ,i.store_id
     ,i.state_id
 from 
-    sales_raw as sr
-    left join calendar as c on c.d = sr.d
+    sales as sr
+    left join calendar as c on c.date = sr.date
     left join item_info as i on sr.id = i.id
 )
