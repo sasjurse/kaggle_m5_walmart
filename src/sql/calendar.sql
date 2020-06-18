@@ -1,11 +1,11 @@
 create unlogged table calendar (
-    date timestamp PRIMARY KEY
+    date timestamp
     ,wm_yr_wk INT
     ,weekday TEXT
     ,wday INT4
     ,month INT4
     ,year INT
-    ,d text
+    ,d text PRIMARY KEY -- joins are usually on this column
     ,event_name_1 text
     ,event_type_1 text
     ,event_name_2 text

@@ -15,10 +15,10 @@ select
     ,quantity as target
     ,sum(quantity) over f10 as target10
     ,sum(quantity) over f20 as target20
-    ,sum(quantity) over w1 as quantity_last_1
-    ,sum(quantity) over w3 as quantity_last_3
-    ,sum(quantity) over w7 as quantity_last_7
-    ,sum(quantity) over w21 as quantity_last_21
+    ,avg(quantity) over w1 as quantity_last_1
+    ,avg(quantity) over w3 as quantity_last_3
+    ,avg(quantity) over w7 as quantity_last_7
+    ,avg(quantity) over w21 as quantity_last_21
 from base
 window
     f10 as (partition by id order by date asc rows between 10 following and 10 following)
