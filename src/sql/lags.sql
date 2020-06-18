@@ -10,6 +10,10 @@ numeric_id Integer
 ,avg_last_21 real
 ,max_last_21 smallint
 ,min_last_21 smallint
+,std_last_21 real
+,avg_last_42 real
+,max_last_42 smallint
+,min_last_42 smallint
 )
 ;
 insert into lags
@@ -35,6 +39,10 @@ select
     ,avg(quantity) over w21 as avg_last_21
     ,max(quantity) over w21 as max_last_21
     ,min(quantity) over w21 as min_last_21
+    ,coalesce(stddev(quantity), 0) over w21 as std_last_21
+    ,avg(quantity) over w42 as avg_last_42
+    ,max(quantity) over w42 as max_last_42
+    ,min(quantity) over w42 as min_last_42
 from base
 window
     f10 as (partition by numeric_id order by date asc rows between 10 following and 10 following)
@@ -43,6 +51,7 @@ window
     ,w3 as (partition by numeric_id order by date asc rows between 3 preceding and 1 preceding)
     ,w7 as (partition by numeric_id order by date asc rows between 7 preceding and 1 preceding)
     ,w21 as (partition by numeric_id order by date asc rows between 21 preceding and 1 preceding)
+    ,w42 as (partition by numeric_id order by date asc rows between 42 preceding and 1 preceding)
 )
 
 select
