@@ -1,3 +1,5 @@
+drop table if exists tmp_train
+;
 create unlogged table tmp_train as
 select
 se.numeric_id
@@ -38,10 +40,10 @@ select
     ,lags.avg_last_21
     ,lags.max_last_21
     ,lags.min_last_21
---    ,lags.std_last_21
---    ,lags.max_last_42
---    ,lags.min_last_42
---    ,lags.avg_last_42
+    ,lags.std_last_21
+    ,lags.max_last_42
+    ,lags.min_last_42
+    ,lags.avg_last_42
     ,tmp_train.relative_median
     ,avg_last_7 * tmp_train.relative_median as wa_adjusted_quantity_last_7
     ,tmp_train.relative_median as sinf_relative_median
@@ -52,5 +54,7 @@ select
 from tmp_train
 inner join lags on tmp_train.date = lags.date and tmp_train.numeric_id = lags.numeric_id
 ;
-
--- ALTER TABLE train create INDEX date_idx index(date)
+create INDEX date_idx ON train (date)
+;
+drop table if exists tmp_train
+;

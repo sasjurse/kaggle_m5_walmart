@@ -48,14 +48,14 @@ def get_rmse(model_name: str):
 with val_errors as (
 select
 train.date
-,train.id
+,train.numeric_id
 ,POWER((train.target - validation.predicted), 2) as pred_error
 ,ce.cum_mse
 from
     train
 inner join validation on
-    train.date = validation.date and validation.id = train.id
-inner join cum_errors as ce on validation.date=ce.date and validation.id=ce.id    
+    train.date = validation.date and validation.id = train.numeric_id
+inner join cum_errors as ce on validation.date=ce.date and validation.id=ce.numeric_id
 where
 validation.model_name = '{model_name}'
 
