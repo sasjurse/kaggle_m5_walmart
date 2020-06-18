@@ -1,47 +1,40 @@
-from model_utilities import collect_features, write_validation_results_to_db, get_rmse
-
 import optuna
-
-
-def eval_model(model, model_name, params, numeric_only=False):
-    assert isinstance(model_name, str), 'model_name should be a string'
-    assert isinstance(params, dict), 'params should be a dict'
-
-    [x, y, ids] = collect_features(data_set='train', size=800000, numeric_only=numeric_only)
-    [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=numeric_only)
-
-    model.fit(x, y, eval_set=(test_x, test_y))
-
-    write_validation_results_to_db(model=model, model_name=model_name, params=str(params), numeric_only=numeric_only)
-
-    score = get_rmse(model_name=model_name)
-
-    return score
-
-#%%
-
-from generics.postgres import create_sa_string
-from catboost import CatBoostRegressor
+from lightgbm import LGBMRegressor
+from model_utilities import eval_model, get_categorical_columns
+import pandas as pd
+from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file, create_sa_string
 
 
 def objective(trial):
-    params = dict(cat_features=['weekday', 'dept_id', 'state_id', 'store_id'],
-                  loss_function='RMSE',
-                  learning_rate=trial.suggest_uniform('learning_rate', 0.01, 0.2),
-                  iterations=3000,
-                  depth=trial.suggest_int('depth', 6, 12),
-                  random_strength=trial.suggest_uniform('random_strength', 1, 3),
-                  min_data_in_leaf=trial.suggest_int('min_child_samples', 5, 100))
 
-    model = CatBoostRegressor(verbose=True, **params)
+    params = {'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 0.7),
+              'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.4, 0.7),
+              'n_estimators': 3500,
+              'learning_rate': trial.suggest_uniform('learning_rate', 0.01, 0.3),
+              'objective': trial.suggest_categorical('objetive', ['tweedie', 'poisson']),
+              'early_stopping_rounds': 100,
+              'lambda_l1': trial.suggest_int('lambda_l1', 0, 1),
+              'min_child_samples': trial.suggest_int('min_child_samples', 5, 100)
+              }
 
-    score = eval_model(model=model, model_name='CatBoost_3', params=params)
+    train_sample = dataframe_from_sql('select * from train limit 1')
+    fit_params = {'categorical_feature':get_categorical_columns(train_sample)}
+
+    train_size = trial.suggest_int('train_size', 400000, 10000000)
+    params['train_size'] = train_size
+
+    model = LGBMRegressor(verbose=1, **params)
+
+    score = eval_model(model, 'LGBM optuna', params=params, train_size=train_size)
+
     return score
 
 
 study = optuna.create_study(direction='minimize',
-                            study_name='CatBoost_3',
+                            study_name='LGBM_optuna',
                             storage=create_sa_string(database='optuna'),
                             load_if_exists=True)
 
-study.optimize(objective, n_trials=5)
+study.optimize(objective, n_trials=2)
+
+#%%

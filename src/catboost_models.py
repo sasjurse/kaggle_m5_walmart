@@ -1,8 +1,11 @@
-from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file
+import optuna
+from catboost import CatBoostRegressor
+
+from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file, create_sa_string
+
 7
 from datetime import datetime
-from model_utilities import collect_features, write_validation_results_to_db
-
+from model_utilities import collect_features, write_validation_results_to_db, eval_model
 
 execute_sql_from_file('validation_table')
 sql = "DELETE FROM validation where model_name = 'CatBoost'"
@@ -36,3 +39,22 @@ df_cb = get_daily_rmse('CatBoost')
 print(df_cb)
 
 #%%
+def cat_boost_objective(trial):
+    params = dict(cat_features=['weekday', 'dept_id', 'state_id', 'store_id'],
+                  loss_function='RMSE',
+                  learning_rate=trial.suggest_uniform('learning_rate', 0.01, 0.2),
+                  iterations=3000,
+                  depth=trial.suggest_int('depth', 6, 12),
+                  random_strength=trial.suggest_uniform('random_strength', 1, 3),
+                  min_data_in_leaf=trial.suggest_int('min_child_samples', 5, 100))
+
+    model = CatBoostRegressor(verbose=True, **params)
+
+    score = eval_model(model=model, model_name='CatBoost_3', params=params)
+    return score
+
+
+study = optuna.create_study(direction='minimize',
+                            study_name='CatBoost_3',
+                            storage=create_sa_string(database='optuna'),
+                            load_if_exists=True)

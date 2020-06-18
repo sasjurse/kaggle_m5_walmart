@@ -5,6 +5,7 @@ class SingleColumnPredictor:
 
     def __init__(self, column_name, divisor=None):
         self.column_name = column_name
+        self.divisor = None
         if divisor:
             self.divisor = divisor
 
@@ -12,24 +13,27 @@ class SingleColumnPredictor:
         if self.divisor:
             return train[self.column_name] / self.divisor
         else:
-            return train
+            return train[self.column_name]
 
 
 column = 'wa_adjusted_quantity_last_7'
-write_validation_results_to_db(model=SingleColumnPredictor(column, divisor=7),
+write_validation_results_to_db(model=SingleColumnPredictor(column),
                                model_name=column,
                                params='Single column'
                                )
 
-column = 'quantity_last_7'
-write_validation_results_to_db(model=SingleColumnPredictor(column, divisor=7),
+column = 'avg_last_7'
+write_validation_results_to_db(model=SingleColumnPredictor(column),
                                model_name=column,
                                params='Single column'
                                )
 
-column = 'quantity_last_3'
-write_validation_results_to_db(model=SingleColumnPredictor(column, divisor=3),
+column = 'avg_last_3'
+write_validation_results_to_db(model=SingleColumnPredictor(column),
                                model_name=column,
                                params='Single column'
                                )
+
+#%%
+
 

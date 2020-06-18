@@ -120,3 +120,22 @@ def collect_from_train(size=10000, numeric_only=False, start_date=START_TRAIN, e
 
 def get_categorical_columns(df: pd.DataFrame):
     return [col for col in df.columns if col not in df.select_dtypes(['number', 'datetime']).columns]
+
+
+def eval_model(model, model_name, params, train_size=800000, numeric_only=False, fit_params=None):
+    assert isinstance(model_name, str), 'model_name should be a string'
+    assert isinstance(params, dict), 'params should be a dict'
+
+    [x, y, ids] = collect_features(data_set='train', size=train_size, numeric_only=numeric_only)
+    [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=numeric_only)
+
+    if fit_params:
+        model.fit(x, y, eval_set=(test_x, test_y), **fit_params)
+    else:
+        model.fit(x, y, eval_set=(test_x, test_y))
+
+    write_validation_results_to_db(model=model, model_name=model_name, params=str(params), numeric_only=numeric_only)
+
+    score = get_rmse(model_name=model_name)
+
+    return score
