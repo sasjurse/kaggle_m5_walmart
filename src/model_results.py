@@ -40,7 +40,8 @@ df_long = dataframe_from_sql(sql)
 
 #%%
 
-calendar = dataframe_from_sql('select * from calendar order by date')
+from generics.postgres import execute_sql
+calendar = execute_sql('delete from model_info')
 
 
 #%%

@@ -67,7 +67,7 @@ val_errors
     """
     validation_error = dataframe_from_sql(sql).iloc[0, 0]
     logging.info(f'Validation error for {model_name} is {validation_error}')
-    return
+    return validation_error
 
 
 def get_daily_rmse(model_name: str):
@@ -107,9 +107,16 @@ def collect_from_train(size=10000, numeric_only=False, start_date=START_TRAIN, e
     limit {size}
     """
     df = dataframe_from_sql(sql)
+
     y = df['target']
     if numeric_only:
         x = df[[col for col in df.select_dtypes('number').columns if col != 'target']]
     else:
         x = df.drop(['id', 'target', 'date'], axis='columns')
+        for c in get_categorical_columns(x):
+            x[c] = x[c].astype('category')  # makes it easier for lightgbm
     return x, y, df[['id', 'date']]
+
+
+def get_categorical_columns(df: pd.DataFrame):
+    return [col for col in df.columns if col not in df.select_dtypes(['number', 'datetime']).columns]

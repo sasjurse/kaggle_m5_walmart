@@ -68,6 +68,62 @@ write_validation_results_to_db(model=model, model_name=model_name, params=str(pa
 
 from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file
 from lightgbm import LGBMRegressor
+from model_utilities import collect_features, write_validation_results_to_db, get_categorical_columns
+from sklearn.preprocessing import OrdinalEncoder
+
+model_name = 'LGBM_cat'
+
+params = {'feature_fraction': 0.58,
+          'bagging_fraction': 0.47,
+          'n_estimators': 4000,
+          'learning_rate': 0.0285,
+          'objective': 'tweedie',
+          'early_stopping_rounds': 100,
+          'min_child_samples': 5
+          }
+
+model = LGBMRegressor(verbose=1, **params)
+
+[x, y, ids] = collect_features(data_set='train', size=100000, numeric_only=False)
+[test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=False)
+
+
+
+model.fit(x, y, eval_set=(test_x, test_y), categorical_feature=get_categorical_columns(x))
+print(str(params))
+
+write_validation_results_to_db(model=model, model_name=model_name, params=str(params),  numeric_only=False)
+
+#%%
+
+cat = get_categorical_columns(x)
+
+#%%
+
+for c in cat_columns:
+    x[c] = x[c].astype('category')
+
+model.fit(x,y, categorical_feature=cat_columns)
+
+
+#%%
+import pandas as pd
+from sklearn.preprocessing import OrdinalEncoder
+transformed = OrdinalEncoder().fit_transform(x, y)
+
+
+
+class Pipeline:
+    def __init__(self, model, cat_columns):
+        self.model = model
+        self.cat_columns = cat_columns
+
+    def fit(self, x, y):
+        self.or
+#%%
+
+from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file
+from lightgbm import LGBMRegressor
 from model_utilities import collect_features, write_validation_results_to_db
 
 
