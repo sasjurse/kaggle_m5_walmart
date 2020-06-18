@@ -28,4 +28,4 @@ window
     hist as (partition by id order by date asc rows between unbounded preceding and 1 preceding)
 ;
 
-ALTER TABLE cum_errors ADD CONSTRAINT cum_errors PRIMARY KEY(date, id)
+ALTER TABLE cum_errors ADD CONSTRAINT cum_errors_pkey PRIMARY KEY(date, id)

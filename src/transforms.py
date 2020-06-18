@@ -19,6 +19,7 @@ if __name__ == '__main__':
                        'snap_influence',
                        'price_changes',
                        'lags',
+                       'cum_errors'
                        'train',
                        'model_info',
                        ]
