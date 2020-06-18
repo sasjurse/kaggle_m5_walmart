@@ -5,10 +5,6 @@ import pandas as pd
 
 model_name = 'LGBM_1200'
 
-execute_sql_from_file('validation_table')
-sql = f"DELETE FROM validation where model_name = '{model_name}'"
-execute_sql(sql)
-
 
 params = {'feature_fraction': 0.58,
           'bagging_fraction': 0.47,
@@ -47,11 +43,6 @@ from model_utilities import collect_features, write_validation_results_to_db
 
 model_name = 'LGBM_100'
 
-execute_sql_from_file('validation_table')
-sql = f"DELETE FROM validation where model_name = '{model_name}'"
-execute_sql(sql)
-
-
 params = {'feature_fraction': 0.58,
           'bagging_fraction': 0.47,
           'n_estimators': 4000,
@@ -81,10 +72,6 @@ from model_utilities import collect_features, write_validation_results_to_db
 
 
 model_name = 'LGBM_diff'
-
-execute_sql_from_file('validation_table')
-sql = f"DELETE FROM validation where model_name = '{model_name}'"
-execute_sql(sql)
 
 
 params = {'sub_feature': 0.9,
