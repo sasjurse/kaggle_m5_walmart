@@ -1,4 +1,4 @@
-create table lags as
+create unlogged table lags as
 with base as (
 select
     id

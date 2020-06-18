@@ -1,4 +1,4 @@
-create table cum_errors as
+create unlogged table cum_errors as
 with base as (
 select
     se.id

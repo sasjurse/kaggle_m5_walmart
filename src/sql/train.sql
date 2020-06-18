@@ -1,4 +1,4 @@
-create table train as
+create unlogged table train as
 select
     se.id
     ,se.date

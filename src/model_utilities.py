@@ -4,13 +4,13 @@ import pandas as pd
 from generics.postgres import dataframe_to_table_bulk, dataframe_to_table, execute_sql, dataframe_from_sql, execute_sql_from_file
 from generics.utilities import get_git_commit
 
-START_TRAIN = datetime(year=2015, month=1, day=15)
-END_TRAIN = datetime(year=2015, month=7, day=1)
-START_TEST = datetime(year=2015, month=7, day=2)
-END_TEST = datetime(year=2015, month=7, day=10)
+START_TRAIN = datetime(year=2014, month=7, day=15)
+END_TRAIN = datetime(year=2015, month=6, day=1)
+START_TEST = datetime(year=2015, month=6, day=2)
+END_TEST = datetime(year=2015, month=6, day=10)
 
-START_VALIDATION = datetime(year=2015, month=8, day=1)
-VALIDATION_LENGTH = 90
+START_VALIDATION = datetime(year=2015, month=7, day=1)
+VALIDATION_LENGTH = 120
 VALIDATION_SIZE = 600000
 
 
@@ -33,10 +33,10 @@ def write_validation_results_to_db(model,
 
     execute_sql_from_file('model_info')
     model_info = pd.DataFrame(data={'model_name': [model_name],
+                                    'rmse': [get_rmse(model_name)],
                                     'created_at': [f"{datetime.now():%Y-%m-%d %H:%M}"],
                                     'params': [str(params)],
                                     'features': [str(val_x.columns)],
-                                    'rmse': [get_rmse(model_name)],
                                     'git_commit': [get_git_commit()]
                                     }
                               )

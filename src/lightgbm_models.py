@@ -84,17 +84,14 @@ params = {'feature_fraction': 0.58,
 
 model = LGBMRegressor(verbose=1, **params)
 
-[x, y, ids] = collect_features(data_set='train', size=100000, numeric_only=False)
+[x, y, ids] = collect_features(data_set='train', size=400000, numeric_only=False)
 [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=False)
-
 
 
 model.fit(x, y, eval_set=(test_x, test_y), categorical_feature=get_categorical_columns(x))
 print(str(params))
 
 write_validation_results_to_db(model=model, model_name=model_name, params=str(params),  numeric_only=False)
-
-#%%
 
 #%%
 
