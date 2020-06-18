@@ -19,7 +19,7 @@ def write_validation_results_to_db(model,
                                    size=VALIDATION_SIZE,
                                    numeric_only=False):
 
-    execute_sql_from_file('validation_table')
+    execute_sql_from_file('validation')
     sql = f"DELETE FROM validation where model_name = '{model_name}'"
     execute_sql(sql)
 

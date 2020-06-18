@@ -1,5 +1,5 @@
 from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file
-from catboost import CatBoostRegressor
+7
 from datetime import datetime
 from model_utilities import collect_features, write_validation_results_to_db
 

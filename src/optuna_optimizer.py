@@ -27,19 +27,20 @@ from catboost import CatBoostRegressor
 def objective(trial):
     params = dict(cat_features=['weekday', 'dept_id', 'state_id', 'store_id'],
                   loss_function='RMSE',
-                  learning_rate=trial.suggest_uniform('learning_rate', 0.001, 0.01),
-                  iterations=5000,
+                  learning_rate=trial.suggest_uniform('learning_rate', 0.01, 0.1),
+                  iterations=7000,
+                  depth=trial.suggest_int('depth', 6, 12),
                   random_strength=trial.suggest_uniform('random_strength', 1, 3),
                   min_data_in_leaf=trial.suggest_int('min_child_samples', 5, 100))
 
     model = CatBoostRegressor(verbose=True, **params)
 
-    score = eval_model(model=model, model_name='CatBoost_2', params=params)
+    score = eval_model(model=model, model_name='CatBoost_3', params=params)
     return score
 
 
 study = optuna.create_study(direction='minimize',
-                            study_name='CatBoost_2',
+                            study_name='CatBoost_3',
                             storage=create_sa_string(database='optuna'),
                             load_if_exists=True)
 
