@@ -1,5 +1,5 @@
 create unlogged table calendar (
-    date timestamp
+    date date
     ,wm_yr_wk INT
     ,weekday TEXT
     ,wday INT4

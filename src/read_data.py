@@ -42,6 +42,7 @@ def import_sales():
 
     execute_sql('drop view if exists sales_ext')
     execute_sql('drop table if exists sales_raw')
+    execute_sql('drop table if exists sales')
     execute_sql_from_file('sales_raw')
     dataframe_to_table_bulk(df2, 'sales_raw')
 
