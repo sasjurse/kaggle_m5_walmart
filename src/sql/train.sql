@@ -13,9 +13,9 @@ select
     ,lags.avg_last_7
     ,lags.avg_last_21
     ,wa.relative_median
-    ,quantity_last_7 * wa.relative_median as wa_adjusted_quantity_last_7
+    ,avg_last_7 * wa.relative_median as wa_adjusted_quantity_last_7
     ,sinf.relative_median as sinf_relative_median
-    ,quantity_last_7 * sinf.relative_median as sinf_adjusted_quantity_last_7
+    ,avg_last_7 * sinf.relative_median as sinf_adjusted_quantity_last_7
     ,pc.price_change_w1
     ,pc.price_change_w3
     ,lags.target

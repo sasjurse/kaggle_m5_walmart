@@ -96,30 +96,6 @@ write_validation_results_to_db(model=model, model_name=model_name, params=str(pa
 
 #%%
 
-cat = get_categorical_columns(x)
-
-#%%
-
-for c in cat_columns:
-    x[c] = x[c].astype('category')
-
-model.fit(x,y, categorical_feature=cat_columns)
-
-
-#%%
-import pandas as pd
-from sklearn.preprocessing import OrdinalEncoder
-transformed = OrdinalEncoder().fit_transform(x, y)
-
-
-
-class Pipeline:
-    def __init__(self, model, cat_columns):
-        self.model = model
-        self.cat_columns = cat_columns
-
-    def fit(self, x, y):
-        self.or
 #%%
 
 from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_file
