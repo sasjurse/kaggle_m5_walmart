@@ -5,7 +5,7 @@ select
     ,quantity
     ,date
 from sales
-where sales.date between '2014-10-01' and '2016-01-31'
+where sales.date between '2011-10-01' and '2016-01-31'
 ),
 
 aggregates as (
@@ -15,10 +15,12 @@ select
     ,quantity as target
     ,sum(quantity) over f10 as target10
     ,sum(quantity) over f20 as target20
-    ,avg(quantity) over w1 as quantity_last_1
-    ,avg(quantity) over w3 as quantity_last_3
-    ,avg(quantity) over w7 as quantity_last_7
-    ,avg(quantity) over w21 as quantity_last_21
+    ,avg(quantity) over w1 as avg_last_1
+    ,avg(quantity) over w3 as avg_last_3
+    ,avg(quantity) over w7 as avg_last_7
+    ,avg(quantity) over w21 as avg_last_21
+    ,max(quantity) over w21 as max_last_21
+    ,min(quantity) over w21 as min_last_21
 from base
 window
     f10 as (partition by id order by date asc rows between 10 following and 10 following)
@@ -32,7 +34,7 @@ window
 select
 *
 from aggregates
-where date > '2015-01-01'
+where date > '2013-01-01'
 ;
 
 ALTER TABLE lags ADD CONSTRAINT lags_pkey PRIMARY KEY(date, id)

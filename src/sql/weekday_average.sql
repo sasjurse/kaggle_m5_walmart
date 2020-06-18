@@ -9,7 +9,7 @@ select
 from
     sales_by_day
 where
-    date between '2014-01-01' and '2014-12-31'
+    date between '2011-01-01' and '2012-12-31'
 group by 1,2,3,4
 ),
 wd as

@@ -8,10 +8,10 @@ select
     ,se.state_id
     ,si.snap_status
     ,si.days_since_snap
-    ,lags.quantity_last_1
-    ,lags.quantity_last_3
-    ,lags.quantity_last_7
-    ,lags.quantity_last_21
+    ,lags.avg_last_1
+    ,lags.avg_last_3
+    ,lags.avg_last_7
+    ,lags.avg_last_21
     ,wa.relative_median
     ,quantity_last_7 * wa.relative_median as wa_adjusted_quantity_last_7
     ,sinf.relative_median as sinf_relative_median
@@ -28,7 +28,7 @@ left join weekday_average as wa
 left join snap_influence as sinf
     on se.dept_id = sinf.dept_id and se.store_id = sinf.store_id
         and sinf.snap_status = si.snap_status
-where se.date between '2015-01-01' and '2016-01-31'
+where se.date between '2013-01-01' and '2016-01-31'
 ;
 
 ALTER TABLE train ADD CONSTRAINT date_item_id_pkey PRIMARY KEY(date, id)

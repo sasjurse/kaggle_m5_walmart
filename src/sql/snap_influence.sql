@@ -10,7 +10,7 @@ from
     sales_by_day as sbd
     left join snap_info si on sbd.date = si.date and sbd.state_id = si.state_id
 where
-    sbd.date between '2014-01-01' and '2014-12-31'
+    sbd.date between '2011-01-01' and '2012-12-31'
 group by 1,2,3,4
 ),
 wd as
