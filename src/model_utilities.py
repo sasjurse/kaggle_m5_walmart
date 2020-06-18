@@ -4,12 +4,12 @@ import pandas as pd
 from generics.postgres import dataframe_to_table_bulk, dataframe_to_table, execute_sql, dataframe_from_sql, execute_sql_from_file
 from generics.utilities import get_git_commit
 
-START_TRAIN = datetime(year=2014, month=7, day=15)
-END_TRAIN = datetime(year=2015, month=6, day=1)
-START_TEST = datetime(year=2015, month=6, day=2)
-END_TEST = datetime(year=2015, month=6, day=10)
+START_TRAIN = datetime(year=2014, month=1, day=15)
+END_TRAIN = datetime(year=2015, month=3, day=1)
+START_TEST = datetime(year=2015, month=3, day=2)
+END_TEST = datetime(year=2015, month=3, day=10)
 
-START_VALIDATION = datetime(year=2015, month=7, day=1)
+START_VALIDATION = datetime(year=2015, month=3, day=12)
 VALIDATION_LENGTH = 120
 VALIDATION_SIZE = 600000
 
@@ -89,12 +89,17 @@ def get_daily_rmse(model_name: str):
 def collect_features(data_set: str, size=10000, numeric_only=False):
     assert data_set in ['train', 'test', 'validation']
     if data_set == 'train':
-        return collect_from_train(size=size, numeric_only=numeric_only, start_date=START_TRAIN, end_date=END_TRAIN)
-    if data_set == 'test':
-        return collect_from_train(size=size, numeric_only=numeric_only, start_date=START_TEST, end_date=END_TEST)
-    if data_set == 'validation':
+        data = collect_from_train(size=size, numeric_only=numeric_only, start_date=START_TRAIN, end_date=END_TRAIN)
+    elif data_set == 'test':
+        data = collect_from_train(size=size, numeric_only=numeric_only, start_date=START_TEST, end_date=END_TEST)
+    elif data_set == 'validation':
         end_date = START_VALIDATION + timedelta(days=VALIDATION_LENGTH)
-        return collect_from_train(size=size, numeric_only=numeric_only, start_date=START_VALIDATION, end_date=end_date)
+        data = collect_from_train(size=size, numeric_only=numeric_only, start_date=START_VALIDATION, end_date=end_date)
+    else:
+        raise Exception('unknown data set')
+    mem_usage = data[0].memory_usage() / (1024 * 1024)
+    logging.info(f"data set with features in MB is \n {mem_usage}")
+    return data
 
 
 def collect_from_train(size=10000, numeric_only=False, start_date=START_TRAIN, end_date=END_TRAIN):

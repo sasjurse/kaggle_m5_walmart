@@ -98,7 +98,7 @@ def execute_sql_from_file(filename: str):
         execute_sql(txt)
 
 
-def dataframe_to_table_bulk(df: pd.DataFrame, table: str):
+def dataframe_to_table_bulk(df: pd.DataFrame, table: str, copy_from_options={}):
     """Faster, but less checks on column names and escape characters"""
     start = time.time()
     cur = get_cursor()
@@ -107,7 +107,7 @@ def dataframe_to_table_bulk(df: pd.DataFrame, table: str):
         df.to_csv(temp.name, sep=';', date_format='%Y-%m-%d', index=False)
         temp.seek(0)
         temp.readline()  # don't read the column names as a row in copy_from
-        cur.copy_from(file=temp, table=table, sep=';')
+        cur.copy_from(file=temp, table=table, sep=';', **copy_from_options)
 
     cur.close()
     end = time.time()

@@ -1,6 +1,6 @@
 create or replace view sales_ext  as (
 select 
-    sr.id
+    sr.numeric_id
     ,sr.quantity
     ,c.date
     ,c.weekday
@@ -13,6 +13,7 @@ select
     ,c.snap_ca
     ,c.snap_tx
     ,c.snap_wi
+    ,i.id
     ,i.dept_id
     ,i.item_id
     ,i.cat_id
@@ -21,5 +22,5 @@ select
 from 
     sales as sr
     left join calendar as c on c.date = sr.date
-    left join item_info as i on sr.id = i.id
+    left join item_info as i on sr.numeric_id = i.numeric_id
 )

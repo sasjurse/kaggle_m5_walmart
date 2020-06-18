@@ -62,7 +62,11 @@ def import_item_info():
 
     execute_sql('drop table if exists item_info')
     execute_sql_from_file('item_info')
-    dataframe_to_table_bulk(df, 'item_info')
+
+    copy_from_options = {'columns': ['id', 'item_id', 'dept_id', 'cat_id', 'store_id', 'state_id']}
+    dataframe_to_table_bulk(df,
+                            'item_info',
+                            copy_from_options=copy_from_options)
 
     end = time.time()
     print(f'import_sales took {round(end - start)} seconds')
@@ -75,10 +79,11 @@ def init_db():
 if __name__ == '__main__':
     import_calendar()
     print('calendar imported')
+    import_item_info()
+    print('item info imported')
     import_sell_prices()
     print('prices imported')
     import_sales()
     print('sales imported')
-    import_item_info()
-    print('item info imported')
+
     init_db()

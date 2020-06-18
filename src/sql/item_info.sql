@@ -1,5 +1,6 @@
 create unlogged table item_info (
-    id TEXT PRIMARY KEY
+    numeric_id SERIAL PRIMARY KEY
+    ,id TEXT
     ,item_id TEXT
     ,dept_id TEXT
     ,cat_id TEXT

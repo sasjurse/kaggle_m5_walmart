@@ -1,7 +1,21 @@
-create unlogged table lags as
+create unlogged table lags(
+numeric_id Integer
+,date date
+,quantity smallint
+,target10 smallint
+,target20 smallint
+,avg_last_1 real
+,avg_last_3 real
+,avg_last_7 real
+,avg_last_21 real
+,max_last_21 smallint
+,min_last_21 smallint
+)
+;
+insert into lags
 with base as (
 select
-    id
+    numeric_id
     ,quantity
     ,date
 from sales
@@ -10,7 +24,7 @@ where sales.date between '2011-10-01' and '2016-01-31'
 
 aggregates as (
 select
-    id
+    numeric_id
     ,date
     ,quantity as target
     ,sum(quantity) over f10 as target10
@@ -23,12 +37,12 @@ select
     ,min(quantity) over w21 as min_last_21
 from base
 window
-    f10 as (partition by id order by date asc rows between 10 following and 10 following)
-    ,f20 as (partition by id order by date asc rows between 20 following and 20 following)
-    ,w1 as (partition by id order by date asc rows between 1 preceding and 1 preceding)
-    ,w3 as (partition by id order by date asc rows between 3 preceding and 1 preceding)
-    ,w7 as (partition by id order by date asc rows between 7 preceding and 1 preceding)
-    ,w21 as (partition by id order by date asc rows between 21 preceding and 1 preceding)
+    f10 as (partition by numeric_id order by date asc rows between 10 following and 10 following)
+    ,f20 as (partition by numeric_id order by date asc rows between 20 following and 20 following)
+    ,w1 as (partition by numeric_id order by date asc rows between 1 preceding and 1 preceding)
+    ,w3 as (partition by numeric_id order by date asc rows between 3 preceding and 1 preceding)
+    ,w7 as (partition by numeric_id order by date asc rows between 7 preceding and 1 preceding)
+    ,w21 as (partition by numeric_id order by date asc rows between 21 preceding and 1 preceding)
 )
 
 select
@@ -37,4 +51,4 @@ from aggregates
 where date > '2013-01-01'
 ;
 
-ALTER TABLE lags ADD CONSTRAINT lags_pkey PRIMARY KEY(date, id)
+ALTER TABLE lags ADD CONSTRAINT lags_pkey PRIMARY KEY(date, numeric_id)
