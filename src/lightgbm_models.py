@@ -18,7 +18,7 @@ params = {'feature_fraction': 0.58,
 
 model = LGBMRegressor(verbose=1, **params)
 
-[x, y, ids] = collect_features(data_set='train', size=9000000, numeric_only=True)
+[x, y, ids] = collect_features(data_set='train', size=12000000, numeric_only=True)
 print('number of rows', len(x))
 [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=True)
 
