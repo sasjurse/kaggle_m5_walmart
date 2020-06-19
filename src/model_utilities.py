@@ -36,7 +36,7 @@ def write_validation_results_to_db(model,
                                     'rmse': [get_rmse(model_name)],
                                     'created_at': [f"{datetime.now():%Y-%m-%d %H:%M}"],
                                     'params': [str(params)],
-                                    'features': [str(val_x.columns)],
+                                    'features': [", ".join(list(val_x))],
                                     'git_commit': [get_git_commit()]
                                     }
                               )

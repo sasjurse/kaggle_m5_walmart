@@ -59,8 +59,6 @@ model = LGBMRegressor(verbose=1, **params)
 [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=True)
 
 model.fit(x, y, eval_set=(test_x, test_y))
-print('helli')
-print(str(params))
 
 write_validation_results_to_db(model=model, model_name=model_name, params=str(params),  numeric_only=True)
 
