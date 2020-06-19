@@ -3,4 +3,5 @@ create unlogged table if not exists validation (
     ,date timestamp
     ,numeric_id integer
     ,predicted real
+    ,target smallint
 )

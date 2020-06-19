@@ -115,6 +115,10 @@ def dataframe_to_table_bulk(df: pd.DataFrame, table: str, copy_from_options={}):
     logging.info(f'dataframe_to_table_bulk took {round(end-start)} seconds')
 
 
+def show_queries_by_user(usename='postgres'):
+    return dataframe_from_sql(f"SELECT * FROM pg_stat_activity where usename={usename}")
+
+
 def calculate_table_sizes():
     sql = """
     SELECT table_schema

@@ -26,10 +26,14 @@ def write_validation_results_to_db(model,
 
     [val_x, val_y, ids] = collect_features(data_set='validation', size=size, numeric_only=numeric_only)
     pred_values = model.predict(val_x)
-    predictions = pd.DataFrame(data={'numeric_id': ids['numeric_id'], 'predicted': pred_values, 'date': ids['date']})
+    predictions = pd.DataFrame(data={'numeric_id': ids['numeric_id'],
+                                     'predicted': pred_values,
+                                     'date': ids['date'],
+                                     'target': val_y})
     predictions['model_name'] = model_name
 
-    dataframe_to_table_bulk(df=predictions[['model_name', 'date', 'numeric_id', 'predicted']], table='validation')
+    dataframe_to_table_bulk(df=predictions[['model_name', 'date', 'numeric_id', 'predicted', 'target']],
+                            table='validation')
 
     execute_sql_from_file('model_info')
     model_info = pd.DataFrame(data={'model_name': [model_name],
@@ -47,14 +51,12 @@ def get_rmse(model_name: str):
     sql = f"""
 with val_errors as (
 select
-train.date
-,train.numeric_id
-,POWER((train.target - validation.predicted), 2) as pred_error
+validation.date
+,validation.numeric_id
+,POWER((validation.target - validation.predicted), 2) as pred_error
 ,ce.cum_mse
-from
-    train
-inner join validation on
-    train.date = validation.date and validation.numeric_id = train.numeric_id
+from 
+    validation
 inner join cum_errors as ce on validation.date=ce.date and validation.numeric_id=ce.numeric_id
 where
 validation.model_name = '{model_name}'
