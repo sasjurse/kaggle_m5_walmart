@@ -39,7 +39,7 @@ select
     ,avg(quantity) over w21 as avg_last_21
     ,max(quantity) over w21 as max_last_21
     ,min(quantity) over w21 as min_last_21
-    ,coalesce(stddev(quantity), 0) over w21 as std_last_21
+    ,stddev(quantity) over w21 as std_last_21
     ,avg(quantity) over w42 as avg_last_42
     ,max(quantity) over w42 as max_last_42
     ,min(quantity) over w42 as min_last_42

@@ -26,10 +26,10 @@ def write_validation_results_to_db(model,
 
     [val_x, val_y, ids] = collect_features(data_set='validation', size=size, numeric_only=numeric_only)
     pred_values = model.predict(val_x)
-    predictions = pd.DataFrame(data={'id': ids['id'], 'predicted': pred_values, 'date': ids['date']})
+    predictions = pd.DataFrame(data={'numeric_id': ids['numeric_id'], 'predicted': pred_values, 'date': ids['date']})
     predictions['model_name'] = model_name
 
-    dataframe_to_table_bulk(df=predictions[['model_name', 'date', 'id', 'predicted']], table='validation')
+    dataframe_to_table_bulk(df=predictions[['model_name', 'date', 'numeric_id', 'predicted']], table='validation')
 
     execute_sql_from_file('model_info')
     model_info = pd.DataFrame(data={'model_name': [model_name],
@@ -54,8 +54,8 @@ train.date
 from
     train
 inner join validation on
-    train.date = validation.date and validation.id = train.numeric_id
-inner join cum_errors as ce on validation.date=ce.date and validation.id=ce.numeric_id
+    train.date = validation.date and validation.numeric_id = train.numeric_id
+inner join cum_errors as ce on validation.date=ce.date and validation.numeric_id=ce.numeric_id
 where
 validation.model_name = '{model_name}'
 
@@ -97,8 +97,8 @@ def collect_features(data_set: str, size=10000, numeric_only=False):
         data = collect_from_train(size=size, numeric_only=numeric_only, start_date=START_VALIDATION, end_date=end_date)
     else:
         raise Exception('unknown data set')
-    mem_usage = data[0].memory_usage() / (1024 * 1024)
-    logging.info(f"data set with features in MB is \n {mem_usage}")
+    mem_usage = data[0].memory_usage().sum() / (1024 * 1024)
+    logging.info(f"data set with features is {mem_usage} MB")
     return data
 
 
@@ -117,10 +117,10 @@ def collect_from_train(size=10000, numeric_only=False, start_date=START_TRAIN, e
     if numeric_only:
         x = df[[col for col in df.select_dtypes('number').columns if col != 'target']]
     else:
-        x = df.drop(['id', 'target', 'date'], axis='columns')
+        x = df.drop(['numeric_id', 'target', 'date'], axis='columns')
         for c in get_categorical_columns(x):
             x[c] = x[c].astype('category')  # makes it easier for lightgbm
-    return x, y, df[['id', 'date']]
+    return x, y, df[['numeric_id', 'date']]
 
 
 def get_categorical_columns(df: pd.DataFrame):
