@@ -3,7 +3,7 @@ with base as (
 select
     store_id
     ,dept_id
-    ,weekday
+    ,wday
     ,date
     ,sum(quantity) as quantity
 from
@@ -17,7 +17,7 @@ wd as
 select
     base.store_id
     ,base.dept_id
-    ,base.weekday
+    ,base.wday
     ,avg(quantity) as weekday_quantity
     ,percentile_cont(0.5) within group (order by quantity) as weekday_median
 from
@@ -27,7 +27,7 @@ group by 1,2,3)
 select
     wd.store_id
     ,wd.dept_id
-    ,wd.weekday
+    ,wd.wday
     ,wd.weekday_quantity / actual_avg as relative_average
     ,wd.weekday_median / actual_avg as relative_median
 from

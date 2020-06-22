@@ -57,7 +57,7 @@ window
 select
 *
 from aggregates
-where date > '2013-01-01'
+where date > '2012-12-31'
 ;
 
 ALTER TABLE lags ADD CONSTRAINT lags_pkey PRIMARY KEY(date, numeric_id)

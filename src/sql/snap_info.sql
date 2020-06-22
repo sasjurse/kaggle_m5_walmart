@@ -17,7 +17,7 @@ select
 d1.date
 ,d1.state_id
 ,d1.snap_status
-,min(DATE_PART('day', d1.date-d2.date)) as days_since_snap
+,min(d1.date-d2.date) as days_since_snap
 from base as d1
 left join base as d2 on d2.date < d1.date and d2.state_id = d1.state_id and d2.snap_status = True
 group by 1,2,3

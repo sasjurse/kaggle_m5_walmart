@@ -3,6 +3,7 @@ select
     sr.numeric_id
     ,sr.quantity
     ,c.date
+    ,c.wday
     ,c.weekday
     ,c.year
     ,c.wm_yr_wk

@@ -19,8 +19,8 @@ select
     base.store_id
     ,base.dept_id
     ,base.snap_status
-    ,avg(quantity) as weekday_quantity
-    ,percentile_cont(0.5) within group (order by quantity) as weekday_median
+    ,avg(quantity) as grouped_quantity
+    ,percentile_cont(0.5) within group (order by quantity) as grouped_median
 from
     base
 group by 1,2,3)
@@ -29,8 +29,8 @@ select
     wd.store_id
     ,wd.dept_id
     ,wd.snap_status
-    ,wd.weekday_quantity / actual_avg as relative_average
-    ,wd.weekday_median / actual_avg as relative_median
+    ,wd.grouped_quantity / actual_avg as relative_average
+    ,wd.grouped_median / actual_avg as relative_median
 from
     wd
 left join (

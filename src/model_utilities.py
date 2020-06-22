@@ -4,12 +4,12 @@ import pandas as pd
 from generics.postgres import dataframe_to_table_bulk, dataframe_to_table, execute_sql, dataframe_from_sql, execute_sql_from_file
 from generics.utilities import get_git_commit
 
-START_TRAIN = datetime(year=2014, month=1, day=15)
-END_TRAIN = datetime(year=2014, month=6, day=1)
-START_TEST = datetime(year=2014, month=6, day=2)
-END_TEST = datetime(year=2014, month=6, day=10)
+START_TRAIN = datetime(year=2013, month=1, day=15)
+END_TRAIN = datetime(year=2013, month=6, day=1)
+START_TEST = datetime(year=2013, month=6, day=2)
+END_TEST = datetime(year=2013, month=6, day=10)
 
-START_VALIDATION = datetime(year=2015, month=3, day=12)
+START_VALIDATION = datetime(year=2013, month=10, day=12)
 VALIDATION_LENGTH = 60
 VALIDATION_SIZE = 600000
 
