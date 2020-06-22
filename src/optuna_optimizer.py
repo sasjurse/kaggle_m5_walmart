@@ -17,12 +17,12 @@ def objective(trial):
               'min_child_samples': trial.suggest_int('min_child_samples', 5, 100)
               }
 
-    train_size = 900000
+    train_size = 9000000
     params['train_size'] = train_size
 
     model = LGBMRegressor(verbose=1, **params)
 
-    score = eval_model(model, 'LGBM optuna 3', params=params, train_size=train_size, fit_params={'verbose' :False})
+    score = eval_model(model, 'LGBM optuna 3', params=params, train_size=train_size, fit_params={'verbose': False})
 
     return score
 
@@ -32,6 +32,6 @@ study = optuna.create_study(direction='minimize',
                             storage=create_sa_string(database='optuna'),
                             load_if_exists=True)
 
-study.optimize(objective, n_trials=10)
+study.optimize(objective, n_trials=100)
 
 #%%

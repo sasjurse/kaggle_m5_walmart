@@ -6,11 +6,11 @@ from generics.utilities import get_git_commit
 import numpy as np
 
 START_TRAIN = datetime(year=2013, month=1, day=15)
-END_TRAIN = datetime(year=2013, month=6, day=1)
-START_TEST = datetime(year=2013, month=6, day=2)
-END_TEST = datetime(year=2013, month=6, day=10)
+END_TRAIN = datetime(year=2013, month=8, day=1)
+START_TEST = datetime(year=2013, month=8, day=2)
+END_TEST = datetime(year=2013, month=8, day=10)
 
-START_VALIDATION = datetime(year=2013, month=10, day=12)
+START_VALIDATION = datetime(year=2013, month=8, day=12)
 VALIDATION_LENGTH = 60
 VALIDATION_SIZE = 600000
 
@@ -31,10 +31,12 @@ def write_validation_results_to_db(model,
     predictions = pd.DataFrame(data={'numeric_id': ids['numeric_id'],
                                      'predicted': pred_values,
                                      'date': ids['date'],
-                                     'target': val_y})
+                                     'target': val_y,
+                                     'cum_mse': val_x['cum_mse']}
+                               )
     predictions['model_name'] = model_name
 
-    dataframe_to_table_bulk(df=predictions[['model_name', 'date', 'numeric_id', 'predicted', 'target']],
+    dataframe_to_table_bulk(df=predictions[['model_name', 'date', 'numeric_id', 'predicted', 'cum_mse', 'target']],
                             table='validation')
 
     execute_sql_from_file('model_info')
@@ -57,10 +59,11 @@ select
 validation.date
 ,validation.numeric_id
 ,POWER((validation.target - validation.predicted), 2) as pred_error
-,ce.cum_mse
+-- ,ce.cum_mse
+,cum_mse
 from 
     validation
-inner join cum_errors as ce on validation.date=ce.date and validation.numeric_id=ce.numeric_id
+-- inner join cum_errors as ce on validation.date=ce.date and validation.numeric_id=ce.numeric_id
 where
 validation.model_name = '{model_name}'
 
@@ -148,7 +151,8 @@ def eval_model(model, model_name, params, train_size=800000, numeric_only=False,
     else:
         model.fit(x, y, eval_set=(test_x, test_y))
 
-    write_validation_results_to_db(model=model, model_name=model_name, params=str(params), numeric_only=numeric_only)
+    write_validation_results_to_db(model=model, model_name=model_name, params=str(params), train_size=train_size,
+                                   numeric_only=numeric_only)
 
     score = get_rmse(model_name=model_name)
 
