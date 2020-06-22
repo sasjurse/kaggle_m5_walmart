@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 from generics.postgres import dataframe_to_table_bulk, dataframe_to_table, execute_sql, dataframe_from_sql, execute_sql_from_file
 from generics.utilities import get_git_commit
+import numpy as np
 
 START_TRAIN = datetime(year=2013, month=1, day=15)
 END_TRAIN = datetime(year=2013, month=6, day=1)
@@ -17,14 +18,15 @@ VALIDATION_SIZE = 600000
 def write_validation_results_to_db(model,
                                    model_name: str,
                                    params: str,
-                                   size=VALIDATION_SIZE,
+                                   train_size=np.nan,
+                                   validation_size=VALIDATION_SIZE,
                                    numeric_only=False):
 
     execute_sql_from_file('validation')
     sql = f"DELETE FROM validation where model_name = '{model_name}'"
     execute_sql(sql)
 
-    [val_x, val_y, ids] = collect_features(data_set='validation', size=size, numeric_only=numeric_only)
+    [val_x, val_y, ids] = collect_features(data_set='validation', size=validation_size, numeric_only=numeric_only)
     pred_values = model.predict(val_x)
     predictions = pd.DataFrame(data={'numeric_id': ids['numeric_id'],
                                      'predicted': pred_values,
@@ -40,6 +42,7 @@ def write_validation_results_to_db(model,
                                     'rmse': [get_rmse(model_name)],
                                     'created_at': [f"{datetime.now():%Y-%m-%d %H:%M}"],
                                     'params': [str(params)],
+                                    'train_size': [train_size],
                                     'features': [", ".join(list(val_x))],
                                     'git_commit': [get_git_commit()]
                                     }
@@ -114,10 +117,11 @@ def collect_from_train(size=10000, numeric_only=False, start_date=START_TRAIN, e
     limit {size}
     """
     df = dataframe_from_sql(sql)
+    logging.info(f'Collected {len(df)} rows from train')
 
     y = df['target']
     if numeric_only:
-        x = df[[col for col in df.select_dtypes('number').columns if col != 'target']]
+        x = df[[col for col in df.select_dtypes('number').columns if col not in ['target', 'numeric_id', 'wday']]]
     else:
         x = df.drop(['numeric_id', 'target', 'date'], axis='columns')
         for c in get_categorical_columns(x):
@@ -126,7 +130,8 @@ def collect_from_train(size=10000, numeric_only=False, start_date=START_TRAIN, e
 
 
 def get_categorical_columns(df: pd.DataFrame):
-    return [col for col in df.columns if col not in df.select_dtypes(['number', 'datetime']).columns]
+    by_type = [col for col in df.columns if col not in df.select_dtypes(['number', 'datetime']).columns]
+    return by_type + ['wday']
 
 
 def eval_model(model, model_name, params, train_size=800000, numeric_only=False, fit_params=None):
