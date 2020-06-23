@@ -29,6 +29,9 @@ CREATE UNLOGGED TABLE train (
     ,price_change_w3 numeric
     ,state_average_last_7 real
     ,state_average_last_21 real
+,weekday_last_1 real
+,weekday_last_2 real
+,weekday_last_8 real
     ,target smallint
     ,cum_mse real
 ) PARTITION BY RANGE (date);
@@ -120,10 +123,14 @@ select
     ,tmp_train.price_change_w3
     ,state_average_last_7
     ,state_average_last_21
+,weekday_last_1
+,weekday_last_2
+,weekday_last_8
     ,lags.target
     ,cum_errors.cum_mse
 from tmp_train_{year} as tmp_train
 inner join lags on tmp_train.date = lags.date and tmp_train.numeric_id = lags.numeric_id
+inner join weekday_lag on tmp_train.date = weekday_lag.date and tmp_train.numeric_id = weekday_lag.numeric_id
 inner join cum_errors on tmp_train.date = cum_errors.date and tmp_train.numeric_id = cum_errors.numeric_id
 """
 
