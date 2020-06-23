@@ -41,7 +41,7 @@ execute_sql(sql)
 
 from generics.postgres import execute_sql, dataframe_from_sql
 
-year = 2013
+year = 2014
 print('starting tmp_train')
 
 execute_sql(f'drop table if exists tmp_train_{year}')
@@ -77,7 +77,7 @@ execute_sql(sql)
 
 from generics.postgres import execute_sql, dataframe_from_sql
 
-year = 2013
+year = 2014
 execute_sql(f'drop table if exists train_{year}')
 
 

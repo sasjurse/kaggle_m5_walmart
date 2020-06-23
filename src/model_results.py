@@ -70,3 +70,13 @@ df_mi = dataframe_from_sql('select model_name, rmse, created_at from model_info 
 
 from generics.postgres import dataframe_from_sql
 df_mi = dataframe_from_sql('select * from model_info order by rmse desc')
+
+#%%
+
+
+from generics.postgres import sql_to_csv, dataframe_from_sql
+from generics.file_locations import logs_folder
+from datetime import datetime
+
+fn = logs_folder() / f"{datetime.now():%Y-%m-%d_%H_%M}_train_results.csv"
+sql_to_csv('select * from model_info', fn)

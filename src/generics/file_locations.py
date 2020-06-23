@@ -22,3 +22,8 @@ def plots_folder():
 def sql_folder():
     root = _search_for_root(Path.cwd())
     return root / 'src' / 'sql'
+
+
+def logs_folder():
+    root = _search_for_root(Path.cwd())
+    return root / 'logs'
