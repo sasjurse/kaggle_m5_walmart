@@ -7,14 +7,16 @@ from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_
 from datetime import datetime
 from model_utilities import collect_features, write_validation_results_to_db, eval_model
 
-execute_sql_from_file('validation_table')
+execute_sql_from_file('validation')
 sql = "DELETE FROM validation where model_name = 'CatBoost'"
 execute_sql(sql)
 
-[test_x, test_y, ids] = collect_features(data_set='test', size=400000, numeric_only=False)
-[x, y, ids] = collect_features(data_set='train', size=40000, numeric_only=False)
+train_size = 800000
 
-params = dict(cat_features=['weekday', 'dept_id', 'state_id', 'store_id'],
+[test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=False)
+[x, y, ids] = collect_features(data_set='train', size=train_size, numeric_only=False)
+
+params = dict(cat_features=['wday', 'dept_id', 'state_id', 'store_id', 'snap_status'],
               loss_function='RMSE',
               learning_rate=0.002,
               iterations=5000,
@@ -28,7 +30,8 @@ model.fit(x, y, eval_set=(test_x, test_y))
 
 yolo = model.get_feature_importance(prettified=True)
 
-write_validation_results_to_db(model=model, model_name='CatBoost', params=str(params), numeric_only=False)
+write_validation_results_to_db(model=model, model_name='CatBoost', params=str(params), train_size=train_size,
+                               numeric_only=False)
 
 
 #%%

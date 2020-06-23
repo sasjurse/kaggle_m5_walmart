@@ -1,5 +1,6 @@
 from generics.postgres import execute_sql, dataframe_from_sql
 
+
 execute_sql('drop table if exists train')
 
 sql = """
@@ -17,10 +18,8 @@ CREATE UNLOGGED TABLE train (
     ,avg_last_7 real
     ,avg_last_21 real
     ,max_last_21 real
-    ,min_last_21 smallint 
     ,std_last_21 smallint
     ,max_last_42 real
-    ,min_last_42 smallint
     ,avg_last_42 smallint
     ,relative_median real
     ,wa_adjusted_quantity_last_7 real
@@ -28,6 +27,8 @@ CREATE UNLOGGED TABLE train (
     ,sinf_adjusted_quantity_last_7 real
     ,price_change_w1 numeric
     ,price_change_w3 numeric
+    ,state_average_last_7 real
+    ,state_average_last_21 real
     ,target smallint
     ,cum_mse real
 ) PARTITION BY RANGE (date);
@@ -41,7 +42,7 @@ execute_sql(sql)
 
 from generics.postgres import execute_sql, dataframe_from_sql
 
-year = 2014
+year = 2013
 print('starting tmp_train')
 
 execute_sql(f'drop table if exists tmp_train_{year}')
@@ -60,6 +61,8 @@ se.numeric_id
 , wa.relative_median
 , pc.price_change_w1
 , pc.price_change_w3
+,gp.state_average_last_7
+,gp.state_average_last_21
 from sales_ext as se
 inner join price_changes as pc on se.store_id = pc.store_id and se.item_id = pc.item_id and se.wm_yr_wk = pc.wm_yr_wk
 inner join snap_info as si on se.state_id = si.state_id and si.date = se.date
@@ -68,6 +71,7 @@ inner join weekday_average as wa
 inner join snap_influence as sinf
     on se.dept_id = sinf.dept_id and se.store_id = sinf.store_id
         and sinf.snap_status = si.snap_status
+inner join grouped_lags as gp on se.state_id = gp.state_id and se.date = gp.date and se.item_id = gp.item_id
 where se.date between '{year}-01-01' and '{year}-12-31'
 """
 
@@ -77,7 +81,7 @@ execute_sql(sql)
 
 from generics.postgres import execute_sql, dataframe_from_sql
 
-year = 2014
+year = 2013
 execute_sql(f'drop table if exists train_{year}')
 
 
@@ -105,10 +109,8 @@ select
     ,lags.avg_last_7
     ,lags.avg_last_21
     ,lags.max_last_21
-    ,lags.min_last_21
     ,lags.std_last_21
     ,lags.max_last_42
-    ,lags.min_last_42
     ,lags.avg_last_42
     ,tmp_train.relative_median
     ,avg_last_7 * tmp_train.relative_median as wa_adjusted_quantity_last_7
@@ -116,6 +118,8 @@ select
     ,avg_last_7 * tmp_train.relative_median as sinf_adjusted_quantity_last_7
     ,tmp_train.price_change_w1
     ,tmp_train.price_change_w3
+    ,state_average_last_7
+    ,state_average_last_21
     ,lags.target
     ,cum_errors.cum_mse
 from tmp_train_{year} as tmp_train
@@ -128,3 +132,7 @@ execute_sql(sql)
 #%%
 
 execute_sql(f"create INDEX date_{year}_idx ON train_{year} (date)")
+
+#%%
+
+execute_sql('drop table tmp_train_{year}')
