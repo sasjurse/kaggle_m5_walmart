@@ -135,4 +135,4 @@ execute_sql(f"create INDEX date_{year}_idx ON train_{year} (date)")
 
 #%%
 
-execute_sql('drop table tmp_train_{year}')
+execute_sql(f'drop table tmp_train_{year}')

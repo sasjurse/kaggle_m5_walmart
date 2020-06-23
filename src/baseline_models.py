@@ -34,6 +34,12 @@ write_validation_results_to_db(model=SingleColumnPredictor(column),
                                params='Single column'
                                )
 
+column = 'state_average_last_7'
+write_validation_results_to_db(model=SingleColumnPredictor(column),
+                               model_name=column,
+                               params='Single column'
+                               )
+
 #%%
 
 
