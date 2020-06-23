@@ -5,7 +5,7 @@ from generics.postgres import dataframe_from_sql, execute_sql, execute_sql_from_
 
 7
 from datetime import datetime
-from model_utilities import collect_features, write_validation_results_to_db, eval_model
+from model_utilities import collect_features, write_validation_results_to_db, eval_lgbm_model
 
 execute_sql_from_file('validation')
 sql = "DELETE FROM validation where model_name = 'CatBoost'"
@@ -53,7 +53,7 @@ def cat_boost_objective(trial):
 
     model = CatBoostRegressor(verbose=True, **params)
 
-    score = eval_model(model=model, model_name='CatBoost_3', params=params)
+    score = eval_lgbm_model(model=model, model_name='CatBoost_3', params=params)
     return score
 
 

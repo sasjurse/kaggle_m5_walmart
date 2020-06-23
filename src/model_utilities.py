@@ -32,7 +32,7 @@ def write_validation_results_to_db(model,
                                      'predicted': pred_values,
                                      'date': ids['date'],
                                      'target': val_y,
-                                     'cum_mse': val_x['cum_mse']}
+                                     'cum_mse': ids['cum_mse']}
                                )
     predictions['model_name'] = model_name
 
@@ -126,10 +126,10 @@ def collect_from_train(size=10000, numeric_only=False, start_date=START_TRAIN, e
     if numeric_only:
         x = df[[col for col in df.select_dtypes('number').columns if col not in ['target', 'numeric_id', 'wday']]]
     else:
-        x = df.drop(['numeric_id', 'target', 'date'], axis='columns')
+        x = df.drop(['numeric_id', 'target', 'date', 'cum_mse'], axis='columns')
         for c in get_categorical_columns(x):
             x[c] = x[c].astype('category')  # makes it easier for lightgbm
-    return x, y, df[['numeric_id', 'date']]
+    return x, y, df[['numeric_id', 'date', 'cum_mse']]
 
 
 def get_categorical_columns(df: pd.DataFrame):
@@ -137,7 +137,7 @@ def get_categorical_columns(df: pd.DataFrame):
     return by_type + ['wday']
 
 
-def eval_model(model, model_name, params, train_size=800000, numeric_only=False, fit_params=None):
+def eval_lgbm_model(model, model_name, params, train_size=800000, numeric_only=False, fit_params=None):
     assert isinstance(model_name, str), 'model_name should be a string'
     assert isinstance(params, dict), 'params should be a dict'
 
@@ -150,6 +150,9 @@ def eval_model(model, model_name, params, train_size=800000, numeric_only=False,
         model.fit(x, y, eval_set=(test_x, test_y), **fit_params)
     else:
         model.fit(x, y, eval_set=(test_x, test_y))
+
+    logging.info(f'Best iteration was {model.best_iteration_}')
+    params['early_stopping_at'] = model.best_iteration_
 
     write_validation_results_to_db(model=model, model_name=model_name, params=str(params), train_size=train_size,
                                    numeric_only=numeric_only)

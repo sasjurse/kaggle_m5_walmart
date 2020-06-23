@@ -4,6 +4,7 @@ select
     se.numeric_id
     ,se.quantity
     ,se.date
+    ,current_price
 from sales_ext as se
 inner join price_changes as pc on se.store_id = pc.store_id and se.item_id = pc.item_id and se.wm_yr_wk = pc.wm_yr_wk
 inner join (select numeric_id, min(date) as min_date from sales_ext where quantity>0 group by numeric_id) as
@@ -17,6 +18,7 @@ select
     ,b1.date
     ,b1.quantity
     ,b2.quantity as b2_quantity
+    ,b2.current_price
     --fixme We are using price changes to filter on items being on sale, as an estimate to "RMSE" is only calculated from first day of sale
     ,POWER(b1.quantity -coalesce(b2.quantity, 0),2) as square_error
 from base as b1
@@ -27,13 +29,17 @@ select
     numeric_id
     ,date
     ,quantity
+    ,b2_quantity
+    ,current_price
     ,square_error
     ,avg(square_error) over hist as cum_mse
+    ,sum(b2_quantity*current_price) over days28 as weight
 from
     daily_error
-group by 1,2,3,4
+group by 1,2,3,4,5,6
 window
     hist as (partition by numeric_id order by date asc rows between unbounded preceding and 0 preceding)
+    ,days28 as (partition by numeric_id order by date asc rows between 28 preceding and 1 preceding)
 ;
 
 ALTER TABLE cum_errors ADD CONSTRAINT cum_errors_pkey PRIMARY KEY(date, numeric_id)

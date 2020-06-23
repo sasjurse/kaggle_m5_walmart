@@ -17,6 +17,7 @@ select
     item_id
     ,store_id
     ,wm_yr_wk
+    ,current_price
     ,coalesce(current_price/last_price, current_price) as price_change_w1
     ,coalesce(current_price/avg_price, current_price) as price_change_w3
 from base
