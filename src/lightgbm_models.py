@@ -87,7 +87,7 @@ params = {'feature_fraction': 0.58,
 
 model = LGBMRegressor(verbose=-1, **params)
 
-train_size = 1200000
+train_size = 2000000
 
 [x, y, ids] = collect_features(data_set='train', size=train_size, numeric_only=False)
 [test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=False)
@@ -110,26 +110,30 @@ from model_utilities import collect_features, write_validation_results_to_db
 
 model_name = 'LGBM_diff'
 
-
-params = {'sub_feature': 0.9,
-          'n_estimators': 4000,
-          'learning_rate': 0.01,
+params = {'feature_fraction': 0.4827903694720314,
+          'bagging_fraction': 0.572260424947954,
+          'n_estimators': 9000,
+          'learning_rate': 0.12602389742331246,
           'objective': 'tweedie',
           'early_stopping_rounds': 100,
-          'max_depth': 5,
-          'subsample': 0.7
+          'lambda_l1': 1
           }
 
 
 model = LGBMRegressor(verbose=1, **params)
+train_size = 2000000
 
-
-[x, y, ids] = collect_features(data_set='train', size=600000, numeric_only=True)
-[test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=True)
+[x, y, ids] = collect_features(data_set='train', size=train_size, numeric_only=False)
+[test_x, test_y, ids] = collect_features(data_set='test', size=100000, numeric_only=False)
 
 model.fit(x, y, eval_set=(test_x, test_y))
 
-write_validation_results_to_db(model=model, model_name=model_name,  params=str(params), numeric_only=True)
+write_validation_results_to_db(model=model,
+                               model_name=model_name,
+                               train_size=train_size,
+                               params=str(params),
+                               numeric_only=False)
+
 
 #%%
 

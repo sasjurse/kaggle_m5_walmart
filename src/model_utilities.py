@@ -6,11 +6,11 @@ from generics.utilities import get_git_commit
 import numpy as np
 
 START_TRAIN = datetime(year=2013, month=1, day=15)
-END_TRAIN = datetime(year=2013, month=8, day=1)
-START_TEST = datetime(year=2013, month=8, day=2)
-END_TEST = datetime(year=2013, month=8, day=10)
+END_TRAIN = datetime(year=2014, month=8, day=1)
+START_TEST = datetime(year=2014, month=8, day=2)
+END_TEST = datetime(year=2014, month=8, day=15)
 
-START_VALIDATION = datetime(year=2013, month=8, day=12)
+START_VALIDATION = datetime(year=2014, month=8, day=16)
 VALIDATION_LENGTH = 60
 VALIDATION_SIZE = 600000
 
