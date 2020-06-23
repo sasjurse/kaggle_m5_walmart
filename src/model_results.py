@@ -3,19 +3,23 @@ from generics.postgres import dataframe_from_sql
 #%%
 from generics.postgres import dataframe_from_sql
 
+from generics.postgres import dataframe_from_sql
+
 sql = """
 select 
 validation.model_name
-,SQRT(AVG(POWER((train.target - validation.predicted),2))) as rmse
-,avg(train.target - validation.predicted) as Error
+,calendar.date
+,calendar.event_name_1
+,SQRT(AVG(POWER((target - validation.predicted),2))) as rmse
+,avg(target - predicted) as Error
 from
-train
-inner join validation on train.date = validation.date and validation.id = train.id
-group by 1
-order by 2 desc"""
+validation
+inner join calendar on validation.date = calendar.date
+group by 1,2,3
+order by 1,2 desc"""
 
 
-df_totals = dataframe_from_sql(sql)
+df_long = dataframe_from_sql(sql)
 
 #%%
 
@@ -50,12 +54,12 @@ from generics.postgres import dataframe_from_sql
 sql = """
 select 
 validation.model_name
-,weekday
-,SQRT(AVG(POWER((train.target - validation.predicted),2))) as rmse
-,avg(train.target - validation.predicted) as Error
+,calendar.weekday
+,SQRT(AVG(POWER((target - validation.predicted),2))) as rmse
+,avg(target - predicted) as Error
 from
-train
-inner join validation on train.date = validation.date and validation.id = train.id
+validation
+inner join calendar on validation.date = calendar.date
 group by 1,2
 order by 1 desc"""
 
