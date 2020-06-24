@@ -83,4 +83,4 @@ from generics.file_locations import logs_folder
 from datetime import datetime
 
 fn = logs_folder() / f"{datetime.now():%Y-%m-%d_%H_%M}_train_results.csv"
-sql_to_csv('select * from model_info', fn)
+sql_to_csv('select * from model_info order by rmse', fn)
