@@ -1,5 +1,5 @@
 catboost==0.23.2
-dash==1.11.0
+dash==2.15.0
 dash-core-components==1.9.1
 dash-html-components==1.0.3
 lightgbm==2.3.1
